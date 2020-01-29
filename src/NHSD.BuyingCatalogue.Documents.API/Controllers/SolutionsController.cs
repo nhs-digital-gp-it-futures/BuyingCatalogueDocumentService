@@ -13,7 +13,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
         [Route("{id}/documents/{type}/exists")]
         public ActionResult Exists(string id, string type)
         {
-            if (id == "42")
+            if (id == "fail" && type == "me")
             {
                 return NotFound();
             }
