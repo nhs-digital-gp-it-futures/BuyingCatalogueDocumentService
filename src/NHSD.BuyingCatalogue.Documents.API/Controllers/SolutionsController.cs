@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Generic;
+using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace NHSD.BuyingCatalogue.Documents.API.Controllers
@@ -10,15 +12,11 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
     public class SolutionsController : ControllerBase
     {
         [HttpGet]
-        [Route("{id}/documents/{type}/exists")]
-        public ActionResult Exists(string id, string type)
+        [Route("{id}/documents/")]
+        [ProducesResponseType(typeof(IEnumerable<string>), (int)HttpStatusCode.OK)]
+        public ActionResult GetFileNames(string id)
         {
-            if (id == "fail" && type == "me")
-            {
-                return NotFound();
-            }
-
-            return Ok();
+            return Ok(new List<string>{"roadmap.pdf"});
         }
     }
 }
