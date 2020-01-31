@@ -1,0 +1,2 @@
+# CA1056: Internal classes should be instantiated
+dotnet_diagnostic.CA1812.severity = none
