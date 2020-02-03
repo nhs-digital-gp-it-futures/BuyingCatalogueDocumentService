@@ -11,7 +11,7 @@ using Moq;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
 using NUnit.Framework;
 
-namespace NHSD.BuyingCatalogue.Documents.API.Unit.Tests
+namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
 {
     [TestFixture]
     internal class AzureBlobStorageTests

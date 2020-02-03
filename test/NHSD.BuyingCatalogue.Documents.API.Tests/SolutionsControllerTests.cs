@@ -6,7 +6,7 @@ using NHSD.BuyingCatalogue.Documents.API.Controllers;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
 using NUnit.Framework;
 
-namespace NHSD.BuyingCatalogue.Documents.API.Unit.Tests
+namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
 {
     internal class SolutionsControllerTests
     {
