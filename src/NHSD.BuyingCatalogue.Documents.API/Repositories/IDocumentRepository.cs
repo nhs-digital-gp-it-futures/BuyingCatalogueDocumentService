@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace NHSD.BuyingCatalogue.Documents.API.Storage
+namespace NHSD.BuyingCatalogue.Documents.API.Repositories
 {
-    public interface IStorage
+    public interface IDocumentRepository
     {
         IAsyncEnumerable<string> GetFileNames(string directory);
     }

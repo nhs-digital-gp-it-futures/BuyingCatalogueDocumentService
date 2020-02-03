@@ -1,6 +1,6 @@
 ﻿namespace NHSD.BuyingCatalogue.Documents.API.Config
 {
-    internal class Settings : ISettings
+    internal class AzureBlobStorageSettings : IAzureBlobStorageSettings
     {
         public string ConnectionString { get; set; }
 

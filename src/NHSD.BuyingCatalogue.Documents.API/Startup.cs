@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using NHSD.BuyingCatalogue.Documents.API.Config;
-using NHSD.BuyingCatalogue.Documents.API.Storage;
+using NHSD.BuyingCatalogue.Documents.API.Repositories;
 
 namespace NHSD.BuyingCatalogue.Documents.API
 {
@@ -22,17 +22,17 @@ namespace NHSD.BuyingCatalogue.Documents.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ISettings>(x => 
-                Configuration.GetSection("AzureBlobStorage").Get<Settings>());
+            services.AddSingleton<IAzureBlobStorageSettings>(x => 
+                Configuration.GetSection("AzureBlobStorage").Get<AzureBlobStorageSettings>());
 
             services.AddTransient(x =>
             {
-                var settings = x.GetService<ISettings>();
+                var settings = x.GetService<IAzureBlobStorageSettings>();
                 return new BlobServiceClient(settings.ConnectionString)
                     .GetBlobContainerClient(settings.ContainerName);
             });
 
-            services.AddTransient<IStorage, AzureBlobStorage>();
+            services.AddTransient<IDocumentRepository, AzureBlobDocumentRepository>();
             services.AddControllers();
             services.AddSwaggerGen(options =>
                 options.SwaggerDoc("v1", new OpenApiInfo

@@ -3,10 +3,10 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.BuyingCatalogue.Documents.API.Controllers;
-using NHSD.BuyingCatalogue.Documents.API.Storage;
+using NHSD.BuyingCatalogue.Documents.API.Repositories;
 using NUnit.Framework;
 
-namespace NHSD.BuyingCatalogue.Documents.API.Tests
+namespace NHSD.BuyingCatalogue.Documents.API.Unit.Tests
 {
     internal class SolutionsControllerTests
     {
@@ -15,16 +15,15 @@ namespace NHSD.BuyingCatalogue.Documents.API.Tests
         {
             var mockEnumerable = new Mock<IAsyncEnumerable<string>>();
 
-            var mockStorage = new Mock<IStorage>();
+            var mockStorage = new Mock<IDocumentRepository>();
             mockStorage.Setup(s => s.GetFileNames(It.IsAny<string>()))
                 .Returns(mockEnumerable.Object);
 
             var controller = new SolutionsController(mockStorage.Object);
-            var result = controller.GetFileNames("Foobar");
+            var result = controller.GetDocumentsBySolutionId("Foobar");
 
-            result.Should().BeOfType<OkObjectResult>();
-
-            var okResult = (OkObjectResult)result;
+            result.Result.Should().BeOfType<OkObjectResult>();
+            var okResult = (OkObjectResult) result.Result;
 
             okResult.StatusCode.Should().Be(200);
             okResult.Value.Should().Be(mockEnumerable.Object);

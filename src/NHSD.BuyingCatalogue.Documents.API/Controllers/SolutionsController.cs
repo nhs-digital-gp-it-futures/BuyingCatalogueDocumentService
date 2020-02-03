@@ -2,7 +2,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.BuyingCatalogue.Documents.API.Storage;
+using NHSD.BuyingCatalogue.Documents.API.Repositories;
 
 namespace NHSD.BuyingCatalogue.Documents.API.Controllers
 {
@@ -12,16 +12,16 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
     [AllowAnonymous]
     public class SolutionsController : ControllerBase
     {
-        private readonly IStorage _storage;
+        private readonly IDocumentRepository _documentRepository;
 
-        public SolutionsController(IStorage storage)
-            => _storage = storage;
+        public SolutionsController(IDocumentRepository documentRepository)
+            => _documentRepository = documentRepository;
 
         [HttpGet]
         [Route("{id}/documents/")]
         [ProducesResponseType(typeof(IAsyncEnumerable<string>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public ActionResult GetFileNames(string id) 
-            => Ok(_storage.GetFileNames(id));
+        public ActionResult<IAsyncEnumerable<string>> GetDocumentsBySolutionId(string id) 
+            => Ok(_documentRepository.GetFileNames(id));
     }
 }

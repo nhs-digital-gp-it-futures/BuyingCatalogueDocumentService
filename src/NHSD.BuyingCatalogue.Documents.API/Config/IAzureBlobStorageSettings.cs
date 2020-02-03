@@ -1,6 +1,6 @@
 ﻿namespace NHSD.BuyingCatalogue.Documents.API.Config
 {
-    public interface ISettings
+    public interface IAzureBlobStorageSettings
     {
         string ConnectionString { get; }
 

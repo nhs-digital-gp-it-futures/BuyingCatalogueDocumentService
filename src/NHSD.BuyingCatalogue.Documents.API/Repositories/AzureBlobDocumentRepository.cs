@@ -3,13 +3,13 @@ using System.IO;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
-namespace NHSD.BuyingCatalogue.Documents.API.Storage
+namespace NHSD.BuyingCatalogue.Documents.API.Repositories
 {
-    internal class AzureBlobStorage : IStorage
+    internal class AzureBlobDocumentRepository : IDocumentRepository
     {
         private readonly BlobContainerClient _client;
 
-        public AzureBlobStorage(BlobContainerClient client)
+        public AzureBlobDocumentRepository(BlobContainerClient client)
         {
             _client = client;
         }
