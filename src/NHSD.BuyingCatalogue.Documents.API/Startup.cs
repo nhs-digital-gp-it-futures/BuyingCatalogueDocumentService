@@ -22,8 +22,8 @@ namespace NHSD.BuyingCatalogue.Documents.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IAzureBlobStorageSettings>(x => 
-                Configuration.GetSection("AzureBlobStorage").Get<AzureBlobStorageSettings>());
+            var settings = Configuration.GetSection("AzureBlobStorage").Get<AzureBlobStorageSettings>();
+            services.AddSingleton<IAzureBlobStorageSettings>(settings);
 
             services.AddTransient(x =>
             {
@@ -31,6 +31,8 @@ namespace NHSD.BuyingCatalogue.Documents.API
                 return new BlobServiceClient(settings.ConnectionString)
                     .GetBlobContainerClient(settings.ContainerName);
             });
+
+            services.AddHealthChecks().AddAzureBlobStorage(settings.ConnectionString, settings.ContainerName);
 
             services.AddTransient<IDocumentRepository, AzureBlobDocumentRepository>();
             services.AddControllers();
@@ -55,6 +57,8 @@ namespace NHSD.BuyingCatalogue.Documents.API
                         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Buying Catalogue Documents API V1");
                     });
             }
+
+            app.UseHealthChecks("/health");
 
             app.UseRouting()
                 .UseEndpoints(endpoints =>
