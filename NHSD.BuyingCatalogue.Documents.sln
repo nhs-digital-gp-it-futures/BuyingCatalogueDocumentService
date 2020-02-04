@@ -3,14 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHSD.BuyingCatalogue.Documents.API", "src\NHSD.BuyingCatalogue.Documents.API\NHSD.BuyingCatalogue.Documents.API.csproj", "{4343E6D1-57E5-49CB-A90C-765269DF7A49}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{70096BBB-B072-4589-88B2-48AA514B4BCE}"
-	ProjectSection(SolutionItems) = preProject
-		config\Documents.FxCop.ruleset = config\Documents.FxCop.ruleset
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.BuyingCatalogue.Documents.API", "src\NHSD.BuyingCatalogue.Documents.API\NHSD.BuyingCatalogue.Documents.API.csproj", "{4343E6D1-57E5-49CB-A90C-765269DF7A49}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F73D1CCA-47A4-4A40-9B43-334DFA6855D9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.BuyingCatalogue.Documents.API.UnitTests", "test\NHSD.BuyingCatalogue.Documents.API.Tests\NHSD.BuyingCatalogue.Documents.API.UnitTests.csproj", "{60036623-6B49-4E45-AC3D-DEEBB09D0B74}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{C37EF23A-0BA3-4C1C-93A0-CF35738F21CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,12 +21,17 @@ Global
 		{4343E6D1-57E5-49CB-A90C-765269DF7A49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4343E6D1-57E5-49CB-A90C-765269DF7A49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4343E6D1-57E5-49CB-A90C-765269DF7A49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60036623-6B49-4E45-AC3D-DEEBB09D0B74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60036623-6B49-4E45-AC3D-DEEBB09D0B74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60036623-6B49-4E45-AC3D-DEEBB09D0B74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60036623-6B49-4E45-AC3D-DEEBB09D0B74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4343E6D1-57E5-49CB-A90C-765269DF7A49} = {F73D1CCA-47A4-4A40-9B43-334DFA6855D9}
+		{60036623-6B49-4E45-AC3D-DEEBB09D0B74} = {C37EF23A-0BA3-4C1C-93A0-CF35738F21CE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B2F2047-19D2-408C-A7B1-031520B56590}

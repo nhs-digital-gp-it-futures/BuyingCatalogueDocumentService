@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Net;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.BuyingCatalogue.Documents.API.Repositories;
 
 namespace NHSD.BuyingCatalogue.Documents.API.Controllers
 {
@@ -9,14 +10,18 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
     [ApiController]
     [Produces("application/json")]
     [AllowAnonymous]
-    public class SolutionsController : ControllerBase
+    public sealed class SolutionsController : ControllerBase
     {
+        private readonly IDocumentRepository _documentRepository;
+
+        public SolutionsController(IDocumentRepository documentRepository)
+            => _documentRepository = documentRepository;
+
         [HttpGet]
-        [Route("{id}/documents/")]
-        [ProducesResponseType(typeof(IEnumerable<string>), (int)HttpStatusCode.OK)]
-        public ActionResult GetFileNames(string id)
-        {
-            return Ok(new List<string>{"roadmap.pdf"});
-        }
+        [Route("{id}/documents")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<IAsyncEnumerable<string>> GetDocumentsBySolutionId(string id)
+            => Ok(_documentRepository.GetFileNames(id));
     }
 }
