@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Flurl;
 
 namespace NHSD.BuyingCatalogue.Documents.API.Repositories
 {
@@ -13,6 +15,10 @@ namespace NHSD.BuyingCatalogue.Documents.API.Repositories
         {
             _client = client;
         }
+
+        public async Task<IDocument> Download(string solutionId, string documentName) =>
+            new AzureBlobDocument(
+                await _client.GetBlobClient(Url.Combine(solutionId, documentName)).DownloadAsync());
 
         public async IAsyncEnumerable<string> GetFileNames(string directory)
         {

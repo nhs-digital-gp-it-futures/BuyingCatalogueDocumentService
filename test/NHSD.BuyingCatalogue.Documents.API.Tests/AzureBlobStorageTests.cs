@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,6 +38,46 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
             _blobPageMock.Setup(x => x.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
                 .Returns(() => _blobItems.ToAsyncEnumerable().GetAsyncEnumerator());
             _documentRepository = new AzureBlobDocumentRepository(_blobContainerClientMock.Object);
+        }
+
+        [Test]
+        public void Download_DependencyThrowsException_DoesNotSwallow()
+        {
+            var mockBlobContainer = new Mock<BlobContainerClient>();
+            mockBlobContainer.Setup(c => c.GetBlobClient(It.IsAny<string>()))
+                .Throws<InvalidOperationException>();
+
+            var storage = new AzureBlobDocumentRepository(mockBlobContainer.Object);
+
+            Assert.ThrowsAsync<InvalidOperationException>(() => storage.Download("ID", "TheBlob"));
+        }
+
+        [Test]
+        public async Task Download_ReturnsBlobDownloadInfo()
+        {
+            const string expectedContentType = "test/content";
+
+            using var expectedStream = new MemoryStream();
+
+            var downloadInfo = BlobsModelFactory.BlobDownloadInfo(
+                content: expectedStream,
+                contentType: expectedContentType);
+
+            var mockResponse = new Mock<Response<BlobDownloadInfo>>();
+            mockResponse.Setup(r => r.Value).Returns(downloadInfo);
+
+            var mockBlobClient = new Mock<BlobClient>();
+            mockBlobClient.Setup(c => c.DownloadAsync()).ReturnsAsync(mockResponse.Object);
+
+            var mockBlobContainer = new Mock<BlobContainerClient>();
+            mockBlobContainer.Setup(c => c.GetBlobClient(It.IsAny<string>())).Returns(mockBlobClient.Object);
+
+            var storage = new AzureBlobDocumentRepository(mockBlobContainer.Object);
+
+            var result = await storage.Download("ID", "TheBlob");
+
+            result.Content.Should().Be(expectedStream);
+            result.ContentType.Should().Be(expectedContentType);
         }
 
         [TestCase("10000-001", "moose", "loose", "about", "the", "house")]
