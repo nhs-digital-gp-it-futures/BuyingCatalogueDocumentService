@@ -1,2 +1,4 @@
-# CA1056: Internal classes should be instantiated
-dotnet_diagnostic.CA1812.severity = none
+[*.cs]
+
+# CA1707: Identifiers should not contain underscores
+dotnet_diagnostic.CA1707.severity = none
