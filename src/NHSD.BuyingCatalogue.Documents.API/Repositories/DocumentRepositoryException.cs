@@ -2,7 +2,7 @@
 
 namespace NHSD.BuyingCatalogue.Documents.API.Repositories
 {
-    public class DocumentRepositoryException : Exception
+    public sealed class DocumentRepositoryException : Exception
     {
         internal const string DefaultMessage = "An error occurred with the document repository.";
 
