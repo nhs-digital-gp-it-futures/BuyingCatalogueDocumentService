@@ -1,4 +1,6 @@
+﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace NHSD.BuyingCatalogue.Documents.API
@@ -14,7 +16,17 @@ namespace NHSD.BuyingCatalogue.Documents.API
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.UseConfiguration(GetConfiguration());
                     webBuilder.UseStartup<Startup>();
                 });
+
+        private static IConfigurationRoot GetConfiguration()
+        {
+            return new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
+        }
     }
 }
