@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
 {
     [TestFixture]
-    internal class AzureBlobDocumentTests
+    internal sealed class AzureBlobDocumentTests
     {
         [Test]
         public void ContentInfo_ReturnsExpectedValue()

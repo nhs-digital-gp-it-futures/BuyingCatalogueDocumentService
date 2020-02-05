@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Azure;
 using FluentAssertions;
 using FluentAssertions.Common;
 using Microsoft.AspNetCore.Http;
@@ -14,27 +14,43 @@ using NUnit.Framework;
 
 namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
 {
-    internal class SolutionsControllerTests
+    internal sealed class SolutionsControllerTests
     {
         [Test]
-        public async Task Download_Exception_ReturnsStatusCodeResult()
+        public async Task DownloadAsync_DocumentRepositoryException_ReturnsStatusCodeResult()
         {
-            var requestException = new RequestFailedException(StatusCodes.Status502BadGateway, "Test");
+            var exception = new DocumentRepositoryException(
+                new InvalidOperationException(),
+                StatusCodes.Status502BadGateway);
 
             var mockStorage = new Mock<IDocumentRepository>();
-            mockStorage.Setup(s => s.Download(It.IsAny<string>(), It.IsAny<string>()))
-                .Throws(requestException);
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .Throws(exception);
 
             var controller = new SolutionsController(mockStorage.Object);
 
-            var result = await controller.Download("ID", "directory") as StatusCodeResult;
+            var result = await controller.DownloadAsync("ID", "directory") as StatusCodeResult;
 
             Assert.NotNull(result);
-            result.StatusCode.Should().Be(requestException.Status);
+            result.StatusCode.Should().Be(exception.HttpStatusCode);
         }
 
         [Test]
-        public async Task Download_ReturnsFileStreamResult()
+        public void DownloadAsync_Exception_DoesNotSwallow()
+        {
+            var exception = new InvalidOperationException();
+
+            var mockStorage = new Mock<IDocumentRepository>();
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .Throws(exception);
+
+            var controller = new SolutionsController(mockStorage.Object);
+
+            Assert.ThrowsAsync<InvalidOperationException>(() => controller.DownloadAsync("ID", "directory"));
+        }
+
+        [Test]
+        public async Task DownloadAsync_ReturnsFileStreamResult()
         {
             const string expectedContentType = "test/content-type";
 
@@ -45,12 +61,12 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
             downloadInfo.Setup(d => d.ContentType).Returns(expectedContentType);
 
             var mockStorage = new Mock<IDocumentRepository>();
-            mockStorage.Setup(s => s.Download(It.IsAny<string>(), It.IsAny<string>()))
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(downloadInfo.Object);
 
             var controller = new SolutionsController(mockStorage.Object);
 
-            var result = await controller.Download("ID", "directory") as FileStreamResult;
+            var result = await controller.DownloadAsync("ID", "directory") as FileStreamResult;
 
             Assert.NotNull(result);
             result.FileStream.IsSameOrEqualTo(expectedStream);
@@ -58,12 +74,12 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
         }
 
         [Test]
-        public void GetFileNames_ReturnsStorageResult()
+        public void GetFileNamesAsync_ReturnsStorageResult()
         {
             var mockEnumerable = new Mock<IAsyncEnumerable<string>>();
 
             var mockStorage = new Mock<IDocumentRepository>();
-            mockStorage.Setup(s => s.GetFileNames(It.IsAny<string>()))
+            mockStorage.Setup(s => s.GetFileNamesAsync(It.IsAny<string>()))
                 .Returns(mockEnumerable.Object);
 
             var controller = new SolutionsController(mockStorage.Object);
@@ -74,7 +90,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
 
             okResult.StatusCode.Should().Be(200);
             okResult.Value.Should().Be(mockEnumerable.Object);
-            mockStorage.Verify(x => x.GetFileNames("Foobar"), Times.Once);
+            mockStorage.Verify(x => x.GetFileNamesAsync("Foobar"), Times.Once);
         }
     }
 }
