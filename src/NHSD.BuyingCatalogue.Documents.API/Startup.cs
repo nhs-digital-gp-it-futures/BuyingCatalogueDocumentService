@@ -27,31 +27,26 @@ namespace NHSD.BuyingCatalogue.Documents.API
             var settings = Configuration.GetSection("AzureBlobStorage").Get<AzureBlobStorageSettings>();
             services.AddSingleton<IAzureBlobStorageSettings>(settings);
 
-            services.AddTransient(x =>
-            {
-                var settings = x.GetService<IAzureBlobStorageSettings>();
-                return new BlobServiceClient(settings.ConnectionString)
-                    .GetBlobContainerClient(settings.ContainerName);
-            });
+            services.AddTransient(x => new BlobServiceClient(settings.ConnectionString)
+                .GetBlobContainerClient(settings.ContainerName));
 
             services.AddCustomHealthChecks(settings);
 
             services.AddTransient<IDocumentRepository, AzureBlobDocumentRepository>();
             services.AddControllers();
             services.AddSwaggerGen(options =>
-                options.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "Documents API",
-                    Version = "v1",
-                    Description = "NHS Digital GP IT Buying Catalogue Documents HTTP API"
-                }));
+                options.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "Documents API",
+                        Version = "v1",
+                        Description = "NHS Digital GP IT Buying Catalogue Documents HTTP API"
+                    }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseRouting();
-
             if (!env.IsProduction())
             {
                 app.UseDeveloperExceptionPage()
@@ -62,27 +57,24 @@ namespace NHSD.BuyingCatalogue.Documents.API
                     });
             }
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapHealthChecks("/health/live",
-                    new HealthCheckOptions
-                    {
-                        Predicate = healthCheckRegistration =>
-                            healthCheckRegistration.Tags.Contains(HealthCheckTags.Live)
-                    });
-
-                endpoints.MapHealthChecks("/health/ready",
-                    new HealthCheckOptions
-                    {
-                        Predicate = healthCheckRegistration =>
-                            healthCheckRegistration.Tags.Contains(HealthCheckTags.Ready)
-                    });
-            });
-
             app.UseRouting()
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
+
+                    endpoints.MapHealthChecks("/health/live",
+                        new HealthCheckOptions
+                        {
+                            Predicate = healthCheckRegistration =>
+                                healthCheckRegistration.Tags.Contains(HealthCheckTags.Live)
+                        });
+
+                    endpoints.MapHealthChecks("/health/ready",
+                        new HealthCheckOptions
+                        {
+                            Predicate = healthCheckRegistration =>
+                                healthCheckRegistration.Tags.Contains(HealthCheckTags.Ready)
+                        });
                 });
         }
     }

@@ -4,13 +4,13 @@ using NHSD.BuyingCatalogue.Documents.API.Config;
 
 namespace NHSD.BuyingCatalogue.Documents.API.HealthChecks
 {
-    internal static class HealthCheckExtensions
+    internal static class ServiceCollectionHealthCheckExtensions
     {
         public static IServiceCollection AddCustomHealthChecks(this IServiceCollection services, IAzureBlobStorageSettings storageSettings)
         {
             services.AddHealthChecks()
                 .AddAzureBlobStorage(storageSettings.ConnectionString, storageSettings.ContainerName, "Azure Blob Storage", HealthStatus.Degraded, new[] {HealthCheckTags.Ready})
-                .AddCheck("Live", () => HealthCheckResult.Healthy("Service is live"), new[] {HealthCheckTags.Live});
+                .AddCheck("self", () => HealthCheckResult.Healthy(), new[] {HealthCheckTags.Live});
             return services;
         }
     }
