@@ -1,12 +1,14 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using NHSD.BuyingCatalogue.Documents.API.Config;
+using NHSD.BuyingCatalogue.Documents.API.HealthChecks;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
 
 namespace NHSD.BuyingCatalogue.Documents.API
@@ -32,7 +34,7 @@ namespace NHSD.BuyingCatalogue.Documents.API
                     .GetBlobContainerClient(settings.ContainerName);
             });
 
-            services.AddHealthChecks().AddAzureBlobStorage(settings.ConnectionString, settings.ContainerName);
+            services.AddCustomHealthChecks(settings);
 
             services.AddTransient<IDocumentRepository, AzureBlobDocumentRepository>();
             services.AddControllers();
@@ -48,6 +50,8 @@ namespace NHSD.BuyingCatalogue.Documents.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseRouting();
+
             if (!env.IsProduction())
             {
                 app.UseDeveloperExceptionPage()
@@ -58,7 +62,22 @@ namespace NHSD.BuyingCatalogue.Documents.API
                     });
             }
 
-            app.UseHealthChecks("/health");
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHealthChecks("/health/live",
+                    new HealthCheckOptions
+                    {
+                        Predicate = healthCheckRegistration =>
+                            healthCheckRegistration.Tags.Contains(HealthCheckTags.Live)
+                    });
+
+                endpoints.MapHealthChecks("/health/ready",
+                    new HealthCheckOptions
+                    {
+                        Predicate = healthCheckRegistration =>
+                            healthCheckRegistration.Tags.Contains(HealthCheckTags.Ready)
+                    });
+            });
 
             app.UseRouting()
                 .UseEndpoints(endpoints =>
