@@ -1,0 +1,48 @@
+version: '3.5'
+
+services:
+
+  nhsd.buyingcatalogue.document.api:
+    image: ${REGISTRY:-nhsd}/buying-catalogue/document-api:${TAG:-latest}
+    container_name: document_api
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - AZUREBLOBSTORAGE__CONNECTIONSTRING=${AZURE_STORAGE_CONNECTION_STRING}
+      - AZUREBLOBSTORAGE__CONTAINERNAME=${CONTAINER_NAME:-container-1}
+      
+    networks:
+      - document_network
+    depends_on:
+      - blob.store
+    ports:
+      - "8090:80"
+      
+  blob.store:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: blob_store
+    networks:
+      - document_network
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      
+  file.upload:
+    image: ${REGISTRY:-nhsd}/buying-catalogue/file-uploader:${TAG:-latest}
+    container_name: file_uploader
+    build: 
+      context: .
+      dockerfile: Dockerfile.fileupload
+    environment:
+      - AZURE_STORAGE_CONNECTION_STRING=${AZURE_STORAGE_CONNECTION_STRING}
+    depends_on:
+      - blob.store
+    networks:
+      - document_network
+      
+networks: 
+  document_network:
+    name: document_network
+    driver: bridge

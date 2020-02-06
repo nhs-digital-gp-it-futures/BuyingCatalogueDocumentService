@@ -2,8 +2,8 @@
 {
     public interface IAzureBlobStorageSettings
     {
-        string ConnectionString { get; }
+        string? ConnectionString { get; }
 
-        string ContainerName { get; }
+        string? ContainerName { get; }
     }
 }
