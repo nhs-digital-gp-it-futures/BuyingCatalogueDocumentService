@@ -14,6 +14,8 @@ using NUnit.Framework;
 
 namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
 {
+    [TestFixture]
+    [Parallelizable(ParallelScope.All)]
     internal sealed class SolutionsControllerTests
     {
         [Test]
