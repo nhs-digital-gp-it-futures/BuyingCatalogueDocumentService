@@ -4,10 +4,10 @@ A service for retrieving files from Azure blob storage
 
 # Running
 ```
-docker-compose -f "docker-compose.integration.yml" up --build -d
+docker-compose up --build
 ```
 
 # Stopping
 ```
-docker-compose -f "docker-compose.integration.yml" down
+docker-compose down
 ```
