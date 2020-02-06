@@ -10,8 +10,9 @@ services:
       dockerfile: Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - AZUREBLOBSTORAGE__CONNECTIONSTRING=AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://blob.store:10000/devstoreaccount1;QueueEndpoint=http://blob.store:10001/devstoreaccount1;TableEndpoint=http://blob.store:10002/devstoreaccount1;
+      - AZUREBLOBSTORAGE__CONNECTIONSTRING=${AZURE_STORAGE_CONNECTION_STRING}
       - AZUREBLOBSTORAGE__CONTAINERNAME=${CONTAINER_NAME:-container-1}
+      
     networks:
       - document_network
     depends_on:
@@ -35,7 +36,7 @@ services:
       context: .
       dockerfile: Dockerfile.fileupload
     environment:
-      - AZURE_STORAGE_CONNECTION_STRING=AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://blob.store:10000/devstoreaccount1;QueueEndpoint=http://blob.store:10001/devstoreaccount1;TableEndpoint=http://blob.store:10002/devstoreaccount1;
+      - AZURE_STORAGE_CONNECTION_STRING=${AZURE_STORAGE_CONNECTION_STRING}
     depends_on:
       - blob.store
     networks:
