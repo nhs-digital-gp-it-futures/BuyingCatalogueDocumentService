@@ -9,12 +9,13 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
         public class IntegrationSetupFixture
         {
             private readonly AzureBlobStorageScenarioContext _scenarioContext;
+
             public IntegrationSetupFixture(AzureBlobStorageScenarioContext scenarioContext)
             {
-                this._scenarioContext = scenarioContext;
+                _scenarioContext = scenarioContext;
             }
 
-            [AfterScenario()]
+            [AfterScenario]
             public async Task ClearBlobContainer()
             {
                 await _scenarioContext.ClearStorage();

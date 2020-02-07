@@ -6,9 +6,10 @@ using TechTalk.SpecFlow.Assist;
 namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
 {
     [Binding]
-    class AzureBlobSteps
+    internal class AzureBlobSteps
     {
         private AzureBlobStorageScenarioContext context;
+
         public AzureBlobSteps(AzureBlobStorageScenarioContext context)
         {
             this.context = context;

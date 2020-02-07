@@ -1,7 +1,7 @@
 ﻿Feature:  Display uploaded file names
-    As BuyingCatalogueService
-    I want make GET documents requests for a solution
-    So that see which files does that soution have
+    As the BuyingCatalogueService
+    I want to make GET documents requests for a solution
+    So that I can see all available documents for a solution
 
 Background:
 	Given There are files in the blob storage

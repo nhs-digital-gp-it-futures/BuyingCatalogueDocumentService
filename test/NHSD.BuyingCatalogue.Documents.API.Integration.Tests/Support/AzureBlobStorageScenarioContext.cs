@@ -10,10 +10,11 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
 {
     internal class AzureBlobStorageScenarioContext
     {
-        private const string ConnectionString = @"UseDevelopmentStorage=true";
+        private const string ConnectionString = "UseDevelopmentStorage=true";
         private const string ContainerName = "container-1";
         private const string SampleDataPath = "SampleData";
-        public Dictionary<string, string> SolutionIdsToGuids = new Dictionary<string, string>();
+
+        private readonly Dictionary<string, string> _solutionIdsToGuids = new Dictionary<string, string>();
         private readonly BlobContainerClient _blobContainer;
 
         public AzureBlobStorageScenarioContext()
@@ -25,7 +26,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
         public async Task InsertFileToStorage(string solutionId, string fileName)
         {
             InsertIntoMapping(solutionId);
-            var blobClient = _blobContainer.GetBlobClient(Path.Combine(SolutionIdsToGuids[solutionId], fileName));
+            var blobClient = _blobContainer.GetBlobClient(Path.Combine(_solutionIdsToGuids[solutionId], fileName));
             using var uploadFileStream = File.OpenRead(Path.Combine(SampleDataPath, solutionId, fileName));
             var response = await blobClient
                 .UploadAsync(uploadFileStream, new BlobHttpHeaders())
@@ -36,7 +37,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
 
         public async Task ClearStorage()
         {
-            foreach (var directory in SolutionIdsToGuids.Values)
+            foreach (var directory in _solutionIdsToGuids.Values)
             {
                 foreach (var blob in _blobContainer.GetBlobs(prefix: directory))
                 {
@@ -47,18 +48,14 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
 
         public string TryToGetGuidFromSolutionId(string solutionId)
         {
-            if (!SolutionIdsToGuids.TryGetValue(solutionId, out string slnId))
-            {
-                slnId = solutionId;
-            }
-            return slnId;
+            return _solutionIdsToGuids.TryGetValue(solutionId, out string solutionIdAsGuid) ? solutionIdAsGuid : Guid.Empty.ToString();
         }
 
         private void InsertIntoMapping(string solutionId)
         {
-            if (!SolutionIdsToGuids.ContainsKey(solutionId))
+            if (!_solutionIdsToGuids.ContainsKey(solutionId))
             {
-                SolutionIdsToGuids[solutionId] = Guid.NewGuid().ToString();
+                _solutionIdsToGuids[solutionId] = Guid.NewGuid().ToString();
             }
         }
     }
