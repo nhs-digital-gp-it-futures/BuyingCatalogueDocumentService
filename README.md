@@ -11,6 +11,7 @@ It interfaces with Azure Blob Storage, via the .Net Azure Storage SDK.
 This repo consists of one service using **.NET Core** and **Docker**.
 
 It contains two main endpoints:
+
 - api/v1/Solutions/{solutionId}/documents
   - Returns a collection of all documents for a given solution
 - api/v1/Solutions/{solutionId}/documents/{filename}
@@ -66,8 +67,8 @@ files:
 
 You can verify that the API has launched correctly by navigating to the following urls via any web browser.
 
-- http://localhost:9090/api/v1/Solutions/health/live
-- http://localhost:9090/api/v1/Solutions/health/ready
+- <http://localhost:8090/api/v1/Solutions/health/live>
+- <http://localhost:8090/api/v1/Solutions/health/ready>
 
 If both URLs return 'Healthy', the environment is configured correctly, and can be accessed via the public endpoints.
 
