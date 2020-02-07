@@ -16,12 +16,18 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
     {
         private readonly ScenarioContext _context;
         private readonly AzureBlobStorageScenarioContext _azureBlobStorageScenarioContext;
-        private const string RootSolutionsUrl = "http://localhost:8090/api/v1/Solutions";
 
         public HttpClientSteps(ScenarioContext context, AzureBlobStorageScenarioContext azureBlobStorageScenarioContext)
         {
             _context = context;
+            _context["RootUrl"] = "http://localhost:8090/api/v1/Solutions";
             _azureBlobStorageScenarioContext = azureBlobStorageScenarioContext;
+        }
+
+        [Given(@"the blob storage service is down")]
+        public void GivenTheBlobStorageServiceIsDown()
+        {
+            _context["RootUrl"] = "http://localhost:8091/api/v1/Solutions";
         }
 
         [When("a GET documents request is made for solution (.*)")]
@@ -30,7 +36,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             using var client = new HttpClient();
 
             var slnId = _azureBlobStorageScenarioContext.TryToGetGuidFromSolutionId(solutionId);
-            var response = await client.GetAsync(new Uri($"{RootSolutionsUrl}/{slnId}/documents"))
+            var response = await client.GetAsync(new Uri($"{_context["RootUrl"]}/{slnId}/documents"))
                 .ConfigureAwait(false);
             _context["Response"] = response;
         }

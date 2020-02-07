@@ -12,13 +12,25 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - AZUREBLOBSTORAGE__CONNECTIONSTRING=${AZURE_STORAGE_CONNECTION_STRING}
       - AZUREBLOBSTORAGE__CONTAINERNAME=${CONTAINER_NAME:-container-1}
-      
     networks:
       - document_network
     depends_on:
       - blob.store
     ports:
       - "8090:80"
+
+  nhsd.buyingcatalogue.document.api.broken:
+    image: ${REGISTRY:-nhsd}/buying-catalogue/document-api:${TAG:-latest}
+    container_name: broken_document_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - AZUREBLOBSTORAGE__CONNECTIONSTRING=${AZURE_STORAGE_CONNECTION_STRING}
+      - AZUREBLOBSTORAGE__CONTAINERNAME=${CONTAINER_NAME:-container-1}  
+    depends_on:
+      - blob.store
+      - nhsd.buyingcatalogue.document.api
+    ports:
+      - "8091:80"
       
   blob.store:
     image: mcr.microsoft.com/azure-storage/azurite
