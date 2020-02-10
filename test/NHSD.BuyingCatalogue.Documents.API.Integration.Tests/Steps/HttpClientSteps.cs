@@ -12,7 +12,7 @@ using TechTalk.SpecFlow.Assist;
 namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
 {
     [Binding]
-    class HttpClientSteps
+    internal class HttpClientSteps
     {
         private readonly ScenarioContext _context;
         private readonly AzureBlobStorageScenarioContext _azureBlobStorageScenarioContext;

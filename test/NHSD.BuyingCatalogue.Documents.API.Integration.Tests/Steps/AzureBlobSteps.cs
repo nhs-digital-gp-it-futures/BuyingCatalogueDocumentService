@@ -19,9 +19,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
         [Given(@"There are files in the blob storage")]
         public async Task GivenFilesAreInBlobStorage(Table fileTable)
         {
-            var table = fileTable.CreateSet<FileTable>();
-
-            foreach (var row in table)
+            foreach (var row in fileTable.CreateSet<FileTable>())
             {
                 foreach (var file in row.FileNames)
                 {

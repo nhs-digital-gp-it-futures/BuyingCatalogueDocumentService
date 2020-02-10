@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
@@ -37,12 +38,9 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
 
         public async Task ClearStorage()
         {
-            foreach (var directory in _solutionIdsToGuids.Values)
+            foreach (var blob in _solutionIdsToGuids.Values.SelectMany(directory => _blobContainer.GetBlobs(prefix: directory)))
             {
-                foreach (var blob in _blobContainer.GetBlobs(prefix: directory))
-                {
-                    await _blobContainer.DeleteBlobAsync(blob.Name);
-                }
+                await _blobContainer.DeleteBlobAsync(blob.Name);
             }
         }
 
