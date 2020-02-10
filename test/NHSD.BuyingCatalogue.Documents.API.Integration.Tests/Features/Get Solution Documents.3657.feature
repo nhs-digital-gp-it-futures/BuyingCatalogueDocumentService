@@ -15,7 +15,7 @@ Background:
 		| sol5       | File with whitespace in its name |
 		| sol6       | děkuji.pdf                       |
 		| sol6       | Благодаря ти.blin                |
-		| sol6       | ありがとうございました.txt                  |
+		| sol6       | ありがとうございました.txt         |
 		| sol6       | תודה.jpeg                        |
 		| sol6       | شكرا لكم.png                     |
 		| sol6       | 谢                                |
@@ -28,11 +28,11 @@ Scenario Outline: 1. Correct file names are returned for a solution
 		| <FileNames> |
 
 	Examples:
-		| SolutionId | FileNames                                                               |
-		| sol1       | File1.txt, File2.txt                                                    |
-		| sol2       | File1.txt, File.ouroboros                                               |
-		| sol3       | File.ouroboros                                                          |
-		| sol4       | File                                                                    |
-		| sol5       | File with whitespace in its name                                        |
+		| SolutionId | FileNames                                                                          |
+		| sol1       | File1.txt, File2.txt                                                               |
+		| sol2       | File1.txt, File.ouroboros                                                          |
+		| sol3       | File.ouroboros                                                                     |
+		| sol4       | File                                                                               |
+		| sol5       | File with whitespace in its name                                                   |
 		| sol6       | děkuji.pdf,Благодаря ти.blin,ありがとうございました.txt,תודה.jpeg, شكرا لكم.png, 谢 |
-		| sol99      |                                                                         |
+		| sol99      |                                                                                    |

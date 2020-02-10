@@ -1,4 +1,4 @@
-﻿Feature:  Display file names when service is not available
+﻿Feature:  Display file names when the storage service is not available
     As the BuyingCatalogueService
     I want to make GET documents requests for a solution
     So that I can see all available documents for a solution

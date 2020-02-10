@@ -1,8 +1,5 @@
 ﻿using System.Threading.Tasks;
-using NUnit.Framework;
 using TechTalk.SpecFlow;
-
-[assembly: Parallelizable(ParallelScope.Fixtures)]
 
 namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
 {

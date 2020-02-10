@@ -20,14 +20,14 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
         public HttpClientSteps(ScenarioContext context, AzureBlobStorageScenarioContext azureBlobStorageScenarioContext)
         {
             _context = context;
-            _context["RootUrl"] = "http://localhost:8090/api/v1/Solutions";
+            _context["RootUrl"] = ServiceUrl.Working;
             _azureBlobStorageScenarioContext = azureBlobStorageScenarioContext;
         }
 
         [Given(@"the blob storage service is down")]
         public void GivenTheBlobStorageServiceIsDown()
         {
-            _context["RootUrl"] = "http://localhost:8091/api/v1/Solutions";
+            _context["RootUrl"] = ServiceUrl.Broken;
         }
 
         [When("a GET documents request is made for solution (.*)")]
@@ -64,6 +64,12 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
         private class FileTable
         {
             public IEnumerable<string> FileNames { get; set; }
+        }
+
+        private static class ServiceUrl
+        {
+            internal const string Working = "http://localhost:8090/api/v1/Solutions";
+            internal const string Broken = "http://localhost:8091/api/v1/Solutions";
         }
     }
 }
