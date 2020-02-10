@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -20,15 +21,18 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
         {
             var table = fileTable.CreateSet<FileTable>();
 
-            foreach (var file in table)
+            foreach (var row in table)
             {
-                await _context.InsertFileToStorage(file.SolutionId, file.Name);
+                foreach (var file in row.FileNames)
+                {
+                    await _context.InsertFileToStorage(row.SolutionId, file);
+                }
             }
         }
 
         private class FileTable
         {
-            public string Name { get; set; }
+            public IEnumerable<string> FileNames { get; set; }
 
             public string SolutionId { get; set; }
         }

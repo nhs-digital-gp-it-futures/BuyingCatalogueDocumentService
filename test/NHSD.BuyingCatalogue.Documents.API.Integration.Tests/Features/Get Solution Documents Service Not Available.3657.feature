@@ -5,7 +5,7 @@
 
 Background:
 	Given There are files in the blob storage
-		| SolutionId | Name      |
+		| SolutionId | FileNames |
 		| sol1       | File1.txt |
 
 Scenario: 1. Azure blob storage is not available
