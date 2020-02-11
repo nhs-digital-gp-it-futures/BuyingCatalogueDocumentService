@@ -1,6 +1,6 @@
-﻿Feature:  Download uploaded file when the storage service is not available
+﻿Feature:  Download an existing file when the storage service is not available
     As the BuyingCatalogueService
-    I want to make GET document - download requests for a solution's file
+    I want to make GET document download requests for a solution's file
     So that I make sure the contents of that file are correct
 
 Background:

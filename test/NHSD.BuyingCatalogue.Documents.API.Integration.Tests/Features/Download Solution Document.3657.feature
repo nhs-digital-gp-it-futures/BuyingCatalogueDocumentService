@@ -1,6 +1,6 @@
-﻿Feature:  Download uploaded files
+﻿Feature:  Download existing files
     As the BuyingCatalogueService
-    I want to make GET document - download requests for a solution's file
+    I want to make GET document download requests for a solution's file
     So that I make sure the contents of that file are correct
 
 Background:
