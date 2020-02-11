@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -33,12 +34,13 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
         [When("a GET documents request is made for solution (.*)")]
         public async Task GetDocumentsForSolution(string solutionId)
         {
-            using var client = new HttpClient();
+            await GetResponseFromEndpoint(solutionId);
+        }
 
-            var slnId = _azureBlobStorageScenarioContext.TryToGetGuidFromSolutionId(solutionId);
-            var response = await client.GetAsync(new Uri($"{_context["RootUrl"]}/{slnId}/documents"))
-                .ConfigureAwait(false);
-            _context["Response"] = response;
+        [When("a GET (.*) document request is made for solution (.*)")]
+        public async Task GetDocumentAsStreamForSolution(string fileName, string solutionId)
+        {
+            await GetResponseFromEndpoint(solutionId, fileName);
         }
 
         [Then(@"a response with status code ([\d]+) is returned")]
@@ -59,6 +61,40 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
 
             var content = JToken.Parse(await response.Content.ReadAsStringAsync());
             content.Select(t => t.Value<string>()).Should().BeEquivalentTo(elements.FileNames);
+        }
+
+        [Then(@"the content of the response is equal to (.*) belonging to (.*)")]
+        public async Task ContentOfTheResponseIsEqualTo(string fileName, string solutionId)
+        {
+            const string sampleDataPath = "SampleData";
+
+            var response = _context["Response"] as HttpResponseMessage;
+            response.Should().NotBeNull();
+
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            var responseBytes = await GetBytesFromStream(responseStream);
+
+            using var ourFileStream = File.OpenRead(Path.Combine(sampleDataPath, solutionId, fileName));
+            var ourFileBytes = await GetBytesFromStream(ourFileStream);
+
+            responseBytes.Should().BeEquivalentTo(ourFileBytes);
+        }
+
+        private async Task GetResponseFromEndpoint(string solutionId, string fileName = null)
+        {
+            using var client = new HttpClient();
+
+            var slnId = _azureBlobStorageScenarioContext.TryToGetGuidFromSolutionId(solutionId);
+            var response = await client.GetAsync(new Uri($"{_context["RootUrl"]}/{slnId}/documents/{fileName}"))
+                .ConfigureAwait(false);
+            _context["Response"] = response;
+        }
+
+        private static async Task<byte[]> GetBytesFromStream(Stream stream)
+        {
+            var resultBytes = new byte[stream.Length];
+            await stream.ReadAsync(resultBytes, 0, (int)stream.Length);
+            return resultBytes;
         }
 
         private class FileTable
