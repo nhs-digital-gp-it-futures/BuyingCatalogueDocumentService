@@ -13,6 +13,8 @@ namespace NHSD.BuyingCatalogue.Documents.API.Config
 
         public string? ContainerName { get; set; }
 
+        // Not part of the interface definition as its current use
+        // is for logging only
         public Uri? Uri
         {
             get
