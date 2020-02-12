@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NHSD.BuyingCatalogue.Documents.API.Config;
 using NUnit.Framework;
 
@@ -13,29 +12,21 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
         {
             const string uri = "http://127.0.0.1:10000/devstoreaccount1";
             const string connectionString =
-                "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=" + uri;
+                "DefaultEndpointsProtocol=http;AccountName=UnitTest;AccountKey=;BlobEndpoint=" + uri;
 
             var settings = new AzureBlobStorageSettings { ConnectionString = connectionString };
 
-            settings.GetUri().Should().NotBeNull();
-            settings.GetUri().AbsoluteUri.Should().BeEquivalentTo(uri);
+            settings.Uri.Should().NotBeNull();
+            settings.Uri.AbsoluteUri.Should().BeEquivalentTo(uri);
         }
 
-        [Test]
-        public void Uri_InvalidConnectionString_DoesNotSwallowFormatException()
+        [TestCase(null)]
+        [TestCase("DefaultEndpointsProtocol=http;NotValid=foo;")]
+        public void Uri_NullConnectionString_ReturnsNull(string connectionString)
         {
-            var settings =
-                new AzureBlobStorageSettings { ConnectionString = "DefaultEndpointsProtocol=http;NotValid=foo;" };
+            var settings = new AzureBlobStorageSettings { ConnectionString = connectionString };
 
-            Assert.Throws<FormatException>(() => settings.GetUri());
-        }
-
-        [Test]
-        public void Uri_NullConnectionString_ReturnsNull()
-        {
-            var settings = new AzureBlobStorageSettings();
-
-            settings.GetUri().Should().BeNull();
+            settings.Uri.Should().BeNull();
         }
     }
 }

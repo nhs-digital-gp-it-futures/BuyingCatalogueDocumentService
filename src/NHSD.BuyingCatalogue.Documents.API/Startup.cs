@@ -95,8 +95,7 @@ namespace NHSD.BuyingCatalogue.Documents.API
         {
             var settings = serviceProvider.GetRequiredService<IAzureBlobStorageSettings>();
 
-            logger.LogInformation("Blob service URI: {0}", settings.GetUri());
-            logger.LogInformation("Blob service container: {0}", settings.ContainerName);
+            logger.LogInformation("Configuration:\n{0}", settings);
         }
     }
 }

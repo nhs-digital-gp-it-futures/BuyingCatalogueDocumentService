@@ -136,9 +136,9 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
 
             internal MockLogger(Action<LogLevel, Exception> logCallback) => this.logCallback = logCallback;
 
-            public IDisposable BeginScope<TState>(TState state) => throw new NotImplementedException();
+            public IDisposable BeginScope<TState>(TState state) => throw new NotSupportedException();
 
-            public bool IsEnabled(LogLevel logLevel) => throw new NotImplementedException();
+            public bool IsEnabled(LogLevel logLevel) => throw new NotSupportedException();
 
             public void Log<TState>(
                 LogLevel logLevel,

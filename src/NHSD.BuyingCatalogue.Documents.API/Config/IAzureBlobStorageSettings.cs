@@ -8,6 +8,6 @@ namespace NHSD.BuyingCatalogue.Documents.API.Config
 
         string? ContainerName { get; }
 
-        Uri? GetUri();
+        Uri? Uri { get; }
     }
 }
