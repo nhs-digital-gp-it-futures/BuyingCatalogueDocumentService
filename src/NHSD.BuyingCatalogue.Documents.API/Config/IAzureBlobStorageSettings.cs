@@ -1,9 +1,13 @@
-﻿namespace NHSD.BuyingCatalogue.Documents.API.Config
+﻿using System;
+
+namespace NHSD.BuyingCatalogue.Documents.API.Config
 {
-    public interface IAzureBlobStorageSettings
+    internal interface IAzureBlobStorageSettings
     {
         string? ConnectionString { get; }
 
         string? ContainerName { get; }
+
+        Uri? GetUri();
     }
 }

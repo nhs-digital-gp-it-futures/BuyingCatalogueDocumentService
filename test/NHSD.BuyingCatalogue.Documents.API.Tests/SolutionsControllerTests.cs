@@ -7,6 +7,7 @@ using FluentAssertions;
 using FluentAssertions.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NHSD.BuyingCatalogue.Documents.API.Controllers;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
@@ -19,6 +20,36 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
     internal sealed class SolutionsControllerTests
     {
         [Test]
+        public async Task DownloadAsync_DocumentRepositoryException_IsLogged()
+        {
+            var exception = new DocumentRepositoryException(
+                new InvalidOperationException(),
+                StatusCodes.Status502BadGateway);
+
+            var mockStorage = new Mock<IDocumentRepository>();
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .Throws(exception);
+
+            var logLevel = LogLevel.None;
+            Exception actualException = null;
+
+            void Callback(LogLevel l, Exception e)
+            {
+                logLevel = l;
+                actualException = e;
+            }
+
+            var mockLogger = new MockLogger<SolutionsController>(Callback);
+
+            var controller = new SolutionsController(mockStorage.Object, mockLogger);
+
+            await controller.DownloadAsync("ID", "directory");
+
+            logLevel.Should().Be(LogLevel.Error);
+            actualException.Should().Be(exception);
+        }
+
+        [Test]
         public async Task DownloadAsync_DocumentRepositoryException_ReturnsStatusCodeResult()
         {
             var exception = new DocumentRepositoryException(
@@ -29,7 +60,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(exception);
 
-            var controller = new SolutionsController(mockStorage.Object);
+            var controller = new SolutionsController(mockStorage.Object, Mock.Of<ILogger<SolutionsController>>());
 
             var result = await controller.DownloadAsync("ID", "directory") as StatusCodeResult;
 
@@ -46,7 +77,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(exception);
 
-            var controller = new SolutionsController(mockStorage.Object);
+            var controller = new SolutionsController(mockStorage.Object, Mock.Of<ILogger<SolutionsController>>());
 
             Assert.ThrowsAsync<InvalidOperationException>(() => controller.DownloadAsync("ID", "directory"));
         }
@@ -66,7 +97,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(downloadInfo.Object);
 
-            var controller = new SolutionsController(mockStorage.Object);
+            var controller = new SolutionsController(mockStorage.Object, Mock.Of<ILogger<SolutionsController>>());
 
             var result = await controller.DownloadAsync("ID", "directory") as FileStreamResult;
 
@@ -84,7 +115,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
             mockStorage.Setup(s => s.GetFileNamesAsync(It.IsAny<string>()))
                 .Returns(mockEnumerable.Object);
 
-            var controller = new SolutionsController(mockStorage.Object);
+            var controller = new SolutionsController(mockStorage.Object, Mock.Of<ILogger<SolutionsController>>());
             var result = controller.GetDocumentsBySolutionId("Foobar");
 
             result.Result.Should().BeOfType<OkObjectResult>();
@@ -93,6 +124,31 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
             okResult.StatusCode.Should().Be(200);
             okResult.Value.Should().Be(mockEnumerable.Object);
             mockStorage.Verify(x => x.GetFileNamesAsync("Foobar"), Times.Once);
+        }
+
+        // This hand-rolled mock is necessary because we currently have a dependency
+        // on ILogger<T> for logging. It is not possible to mock dynamically because
+        // the FormattedLogValues framework struct is internal.
+        // Recommend that we refactor by defining our owning logging abstraction.
+        private class MockLogger<T> : ILogger<T>
+        {
+            private readonly Action<LogLevel, Exception> logCallback;
+
+            internal MockLogger(Action<LogLevel, Exception> logCallback) => this.logCallback = logCallback;
+
+            public IDisposable BeginScope<TState>(TState state) => throw new NotImplementedException();
+
+            public bool IsEnabled(LogLevel logLevel) => throw new NotImplementedException();
+
+            public void Log<TState>(
+                LogLevel logLevel,
+                EventId eventId,
+                TState state,
+                Exception exception,
+                Func<TState, Exception, string> formatter)
+            {
+                logCallback(logLevel, exception);
+            }
         }
     }
 }
