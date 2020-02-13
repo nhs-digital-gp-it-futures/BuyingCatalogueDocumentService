@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -6,10 +7,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NHSD.BuyingCatalogue.Documents.API.Config;
 using NHSD.BuyingCatalogue.Documents.API.HealthChecks;
+using NHSD.BuyingCatalogue.Documents.API.Logging;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
+using Serilog;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace NHSD.BuyingCatalogue.Documents.API
 {
@@ -17,7 +22,9 @@ namespace NHSD.BuyingCatalogue.Documents.API
     public class Startup
     {
         public Startup(IConfiguration configuration)
-            => Configuration = configuration;
+        {
+            Configuration = configuration;
+        }
 
         public IConfiguration Configuration { get; }
 
@@ -45,7 +52,9 @@ namespace NHSD.BuyingCatalogue.Documents.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked by runtime.")]
+        [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Invoked by runtime.")]
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (!env.IsProduction())
             {
@@ -56,6 +65,8 @@ namespace NHSD.BuyingCatalogue.Documents.API
                         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Buying Catalogue Documents API V1");
                     });
             }
+
+            app.UseSerilogRequestLogging(o => o.GetLevel = SerilogRequestLoggingOptions.GetLevel);
 
             app.UseRouting()
                 .UseEndpoints(endpoints =>
@@ -76,6 +87,15 @@ namespace NHSD.BuyingCatalogue.Documents.API
                                 healthCheckRegistration.Tags.Contains(HealthCheckTags.Ready)
                         });
                 });
+
+            LogConfiguration(app.ApplicationServices, logger);
+        }
+
+        private static void LogConfiguration(IServiceProvider serviceProvider, ILogger logger)
+        {
+            var settings = serviceProvider.GetRequiredService<IAzureBlobStorageSettings>();
+
+            logger.LogInformation("Configuration:\n{0}", settings);
         }
     }
 }

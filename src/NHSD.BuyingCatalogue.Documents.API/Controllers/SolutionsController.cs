@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
 
 namespace NHSD.BuyingCatalogue.Documents.API.Controllers
@@ -14,9 +16,16 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
     public sealed class SolutionsController : ControllerBase
     {
         private readonly IDocumentRepository _documentRepository;
+        private readonly ILogger _logger;
 
-        public SolutionsController(IDocumentRepository documentRepository)
-            => _documentRepository = documentRepository;
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "MS DI requires closed-generic ILogger type")]
+        public SolutionsController(
+            IDocumentRepository documentRepository,
+            ILogger<SolutionsController> logger)
+        {
+            _documentRepository = documentRepository;
+            _logger = logger;
+        }
 
         [HttpGet]
         [Route("{id}/documents/{name}")]
@@ -38,6 +47,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
             }
             catch (DocumentRepositoryException e)
             {
+                _logger.LogError(e, null);
                 return StatusCode(e.HttpStatusCode);
             }
 
