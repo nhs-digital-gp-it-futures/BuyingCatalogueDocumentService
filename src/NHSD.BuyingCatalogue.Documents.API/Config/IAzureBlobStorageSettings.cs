@@ -5,5 +5,9 @@
         string? ConnectionString { get; }
 
         string? ContainerName { get; }
+
+        AzureBlobStorageHealthCheckSettings? HealthCheck { get; }
+
+        AzureBlobStorageRetrySettings? Retry { get; }
     }
 }
