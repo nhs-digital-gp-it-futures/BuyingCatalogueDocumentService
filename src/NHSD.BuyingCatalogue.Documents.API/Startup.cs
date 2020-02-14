@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -34,8 +33,7 @@ namespace NHSD.BuyingCatalogue.Documents.API
             var settings = Configuration.GetSection("AzureBlobStorage").Get<AzureBlobStorageSettings>();
             services.AddSingleton<IAzureBlobStorageSettings>(settings);
 
-            services.AddTransient(x => new BlobServiceClient(settings.ConnectionString)
-                .GetBlobContainerClient(settings.ContainerName));
+            services.AddTransient(x => AzureBlobContainerClientFactory.Create(settings));
 
             services.AddCustomHealthChecks(settings);
 

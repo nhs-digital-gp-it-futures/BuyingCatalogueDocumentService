@@ -6,11 +6,18 @@ namespace NHSD.BuyingCatalogue.Documents.API.HealthChecks
 {
     internal static class ServiceCollectionHealthCheckExtensions
     {
-        public static IServiceCollection AddCustomHealthChecks(this IServiceCollection services, IAzureBlobStorageSettings storageSettings)
+        internal static IServiceCollection AddCustomHealthChecks(this IServiceCollection services, IAzureBlobStorageSettings storageSettings)
         {
             services.AddHealthChecks()
-                .AddAzureBlobStorage(storageSettings.ConnectionString, storageSettings.ContainerName, "Azure Blob Storage", HealthStatus.Degraded, new[] {HealthCheckTags.Ready})
-                .AddCheck("self", () => HealthCheckResult.Healthy(), new[] {HealthCheckTags.Live});
+                .AddAzureBlobStorage(
+                    storageSettings.ConnectionString,
+                    storageSettings.ContainerName,
+                    "Azure Blob Storage",
+                    HealthStatus.Degraded,
+                    new[] { HealthCheckTags.Ready },
+                    storageSettings.HealthCheck?.Timeout)
+                .AddCheck("self", () => HealthCheckResult.Healthy(), new[] { HealthCheckTags.Live });
+
             return services;
         }
     }
