@@ -15,17 +15,7 @@ services:
       - AZUREBLOBSTORAGE__CONNECTIONSTRING=${AZURE_STORAGE_CONNECTION_STRING}
       - AZUREBLOBSTORAGE__CONTAINERNAME=${CONTAINER_NAME:-container-1}
 
-#Bloob Store
-  blob.store:
-    image: mcr.microsoft.com/azure-storage/azurite
-    container_name: blob_store
-    networks:
-      - document_network
-    ports:
-      - "10000:10000"
-      - "10001:10001"
-
-#File Upload   
+#File Upload
   file.upload:
     image: ${REGISTRY:-nhsd}/buying-catalogue/file-uploader:${TAG:-latest}
     container_name: file_uploader
