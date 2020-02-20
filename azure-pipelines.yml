@@ -5,15 +5,35 @@
 
 trigger:
 - master
+- development
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: GP IT Futures AKS Build Agents
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+jobs: 
+- job: dockerBuildAndPush
+  displayName: Build and push docker containers to the acr
+  condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
+  dependsOn: buildAndTest
+  steps:
+  - task: DockerInstaller@0
+    inputs:
+      dockerVersion: '18.09.9'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  - task: DockerCompose@0
+    displayName: 'Build: Dev'
+    inputs:
+      containerregistrytype: 'Azure Container Registry'
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      azureContainerRegistry: '{"loginServer":"gpitfuturesdevacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesdevacr"}'
+      dockerComposeFile: '**/docker-compose-build.yml'
+      action: 'Build services'
+
+  - task: DockerCompose@0
+    displayName: 'Push: Dev'
+    inputs:
+      containerregistrytype: 'Azure Container Registry'
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      azureContainerRegistry: '{"loginServer":"gpitfuturesdevacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesdevacr"}'
+      dockerComposeFile: '**/docker-compose-build.yml'
+      action: 'Push services'
