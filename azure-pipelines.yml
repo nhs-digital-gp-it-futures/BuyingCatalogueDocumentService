@@ -13,8 +13,6 @@ pool:
 jobs: 
 - job: dockerBuildAndPush
   displayName: Build and push docker containers to the acr
-  condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
-  dependsOn: buildAndTest
   steps:
   - task: DockerInstaller@0
     inputs:
