@@ -10,6 +10,22 @@ trigger:
 pool:
   name: GP IT Futures AKS Build Agents
 
+- task: DotNetCoreCLI@2
+  displayName: 'Run unit tests'
+  inputs:
+    command: test
+    projects: |
+      **/*Tests.csproj
+      !**/*IntegrationTests.csproj
+    arguments: '-v n --collect "Code coverage"'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run Integration tests'
+  inputs:
+    command: test
+    projects: '**/*IntegrationTests.csproj'
+    arguments: '  -v n'
+
 steps:
 - task: DockerInstaller@0
   inputs:
