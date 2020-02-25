@@ -15,6 +15,11 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
                 _scenarioContext = scenarioContext;
             }
 
+            [BeforeTestRun]
+            public static void AssureContainerExists()
+            {
+                AzureBlobStorageScenarioContext.CreateBlobContainerIfNotExists();
+            }
             [AfterScenario]
             public async Task ClearBlobContainer()
             {
