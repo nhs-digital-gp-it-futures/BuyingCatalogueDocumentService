@@ -1,22 +1,6 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:63600",
-      "sslPort": 44395
-    }
-  },
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "launchUrl": "swagger"
-    },
     "NHSD.BuyingCatalogue.Documents.API": {
       "commandName": "Project",
       "launchBrowser": true,
@@ -24,7 +8,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+      "applicationUrl": "http://localhost:5101"
     }
   }
 }
