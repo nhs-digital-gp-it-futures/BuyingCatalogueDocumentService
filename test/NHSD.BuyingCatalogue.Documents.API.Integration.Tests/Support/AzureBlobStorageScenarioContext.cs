@@ -11,7 +11,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
 {
     internal class AzureBlobStorageScenarioContext
     {
-        private const string ConnectionString = "UseDevelopmentStorage=true";
+        private const string ConnectionString = "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10100/devstoreaccount1;QueueEndpoint=http://localhost:10101/devstoreaccount1;TableEndpoint=http://localhost:10102/devstoreaccount1;";
         private const string ContainerName = "container-1";
         private const string SampleDataPath = "SampleData";
 
@@ -55,6 +55,16 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
             {
                 _solutionIdsToGuids[solutionId] = Guid.NewGuid().ToString();
             }
+        }
+
+        public static void CreateBlobContainerIfNotExists()
+        {
+            BlobServiceClient client = new BlobServiceClient(ConnectionString);
+            if (client.GetBlobContainers(prefix: ContainerName).Any(container => container.Name.Equals(ContainerName)))
+            {
+                return;
+            }
+            client.CreateBlobContainer(ContainerName, PublicAccessType.BlobContainer);
         }
     }
 }

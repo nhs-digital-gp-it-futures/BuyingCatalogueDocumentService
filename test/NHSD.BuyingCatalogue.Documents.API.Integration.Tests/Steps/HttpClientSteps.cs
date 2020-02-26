@@ -104,8 +104,8 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
 
         private static class ServiceUrl
         {
-            internal const string Working = "http://localhost:8090/api/v1/Solutions";
-            internal const string Broken = "http://localhost:8091/api/v1/Solutions";
+            internal const string Working = "http://localhost:5201/api/v1/Solutions";
+            internal const string Broken = "http://localhost:5211/api/v1/Solutions";
         }
     }
 }
