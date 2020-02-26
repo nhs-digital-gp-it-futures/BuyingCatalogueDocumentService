@@ -1,6 +1,6 @@
 variables:
   dockerVersion: '19.03.5'
-  dotnetVersion: '3.1.x'
+  dotnetVersion: '3.1.101'
 
 trigger:
 - master
@@ -29,7 +29,7 @@ steps:
   inputs:
     command: test
     projects: '**/*API.Tests/*.csproj'
-    arguments: '-v n'
+    arguments: '-v n  --collect "Code coverage"'
 
 - task: DotNetCoreCLI@2
   displayName: 'Run Integration tests'
