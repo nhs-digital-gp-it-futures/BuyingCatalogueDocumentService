@@ -11,7 +11,7 @@ pr:
 - development
 
 pool:
-  name: GP IT Futures AKS Build Agents
+  vmImage: 'ubuntu-latest'
 
 steps:
 
