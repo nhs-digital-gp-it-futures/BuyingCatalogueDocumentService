@@ -1,6 +1,6 @@
 variables:
   dockerVersion: '19.03.5'
-  dotnetVersion: '3.1.101'
+  dotnetVersion: '3.1.x'
 
 trigger:
 - master
@@ -19,6 +19,13 @@ steps:
   inputs:
     dockerVersion: $(dockerVersion)
   displayName: 'Docker: Install - $(dockerVersion)'
+
+- task: UseDotNet@2
+  displayName: 'Use DotNet Core $(dotnetVersion)'
+  inputs:
+    packageType: 'sdk'
+    version: $(dotnetVersion)
+    includePreviewVersions: false
 
 - script: |
     docker-compose -f "docker-compose.integration.yml" up --build -d
