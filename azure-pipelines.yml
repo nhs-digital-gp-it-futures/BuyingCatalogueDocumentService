@@ -122,3 +122,4 @@ steps:
 
 - script: docker-compose -f "docker-compose.integration.yml" down -v
   displayName: 'Docker-compose down'
+  condition: always()
