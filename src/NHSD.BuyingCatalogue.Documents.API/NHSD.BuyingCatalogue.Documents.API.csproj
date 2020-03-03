@@ -5,7 +5,6 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Nullable>enable</Nullable>
-    <UserSecretsId>009fd26b-4f3b-47f0-8d4d-26fb0bcd3105</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
