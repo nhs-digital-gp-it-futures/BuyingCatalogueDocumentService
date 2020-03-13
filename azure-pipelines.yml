@@ -44,6 +44,11 @@ steps:
     projects: '**/*Integration.Tests/*.csproj'
     arguments: '-v n'
 
+
+- script: docker-compose -f "docker-compose.integration.yml" down -v
+  displayName: 'Docker-compose down'
+  condition: always()
+
 - task: DockerCompose@0
   displayName: 'Build: Dev'
   inputs:
@@ -131,7 +136,3 @@ steps:
     action: 'Push services'
     additionalImageTags: '$(Build.BuildNumber)'
     includeSourceTags: true
-
-- script: docker-compose -f "docker-compose.integration.yml" down -v
-  displayName: 'Docker-compose down'
-  condition: always()
