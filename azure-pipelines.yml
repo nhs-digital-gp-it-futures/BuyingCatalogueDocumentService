@@ -27,7 +27,7 @@ steps:
     version: $(dotnetVersion)
     includePreviewVersions: false
 
-- script: docker-compose -f "docker-compose.yml" up - -d
+- script: docker-compose up --build -d
   displayName: 'Docker-compose up'
 
 - task: DotNetCoreCLI@2
@@ -45,7 +45,7 @@ steps:
     arguments: '-v n'
 
 
-- script: docker-compose -f "docker-compose.yml" down -v
+- script: docker-compose down -v
   displayName: 'Docker-compose down'
   condition: always()
 
