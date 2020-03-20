@@ -1,0 +1,11 @@
+version: '3.5'
+
+services:
+
+#DocumentService
+  nhsd.buyingcatalogue.document.api:
+    image: ${REGISTRY:-nhsd}/buying-catalogue/document-dapi:${TAG:-latest}
+    container_name: document_api
+    build:
+      context: .
+      dockerfile: Dockerfile
