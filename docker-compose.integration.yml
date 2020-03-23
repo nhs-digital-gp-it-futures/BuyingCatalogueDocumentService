@@ -1,0 +1,48 @@
+version: '3.5'
+
+services:
+
+  nhsd.buyingcatalogue.document.api:
+    image: ${REGISTRY:-nhsd}/buying-catalogue/document-api:${TAG:-latest}
+    container_name: nhsd_bc_integration_document_api
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - AZUREBLOBSTORAGE__CONNECTIONSTRING=${AZURE_STORAGE_CONNECTION_STRING}
+      - AZUREBLOBSTORAGE__CONTAINERNAME=${CONTAINER_NAME:-container-1}
+    networks:
+      - document_network
+    depends_on:
+      - blob.store
+    ports:
+      - "5201:80"
+
+# identical version of nshd.buyingcatalogue.document.api component without access to the document_network to simulate API without access to blob.store
+  nhsd.buyingcatalogue.document.api.broken:
+    image: ${REGISTRY:-nhsd}/buying-catalogue/document-api:${TAG:-latest}
+    container_name: nhsd_bc_integration_broken_document_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - AZUREBLOBSTORAGE__CONNECTIONSTRING=${AZURE_STORAGE_CONNECTION_STRING}
+      - AZUREBLOBSTORAGE__CONTAINERNAME=${CONTAINER_NAME:-container-1}  
+    depends_on:
+      - blob.store
+      - nhsd.buyingcatalogue.document.api
+    ports:
+      - "5211:80"
+      
+  blob.store:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: nhsd_bc_integration_blob_store
+    networks:
+      - document_network
+    ports:
+      - "10100:10000"
+      - "10101:10001"
+      
+networks: 
+  document_network:
+    name: integration_document_network
+    driver: bridge

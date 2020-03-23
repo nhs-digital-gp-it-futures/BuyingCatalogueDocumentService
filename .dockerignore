@@ -1,0 +1,10 @@
+.git
+.vs
+.vscode
+.dockerignore
+.gitignore
+docker-compose.yml
+*Dockerfile*
+
+bin
+obj

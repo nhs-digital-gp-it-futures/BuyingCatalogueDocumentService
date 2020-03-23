@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.BuyingCatalogue.Documents.API", "src\NHSD.BuyingCatalogue.Documents.API\NHSD.BuyingCatalogue.Documents.API.csproj", "{4343E6D1-57E5-49CB-A90C-765269DF7A49}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F73D1CCA-47A4-4A40-9B43-334DFA6855D9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.BuyingCatalogue.Documents.API.UnitTests", "test\NHSD.BuyingCatalogue.Documents.API.Tests\NHSD.BuyingCatalogue.Documents.API.UnitTests.csproj", "{60036623-6B49-4E45-AC3D-DEEBB09D0B74}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{C37EF23A-0BA3-4C1C-93A0-CF35738F21CE}"
+	ProjectSection(SolutionItems) = preProject
+		test\.editorconfig = test\.editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2E66BA6E-566A-4B4D-8C82-415148612C2E}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.BuyingCatalogue.Documents.API.IntegrationTests", "test\NHSD.BuyingCatalogue.Documents.API.Integration.Tests\NHSD.BuyingCatalogue.Documents.API.IntegrationTests.csproj", "{921F08FC-1182-41D9-9081-025F8EAE4876}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4343E6D1-57E5-49CB-A90C-765269DF7A49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4343E6D1-57E5-49CB-A90C-765269DF7A49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4343E6D1-57E5-49CB-A90C-765269DF7A49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4343E6D1-57E5-49CB-A90C-765269DF7A49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60036623-6B49-4E45-AC3D-DEEBB09D0B74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60036623-6B49-4E45-AC3D-DEEBB09D0B74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60036623-6B49-4E45-AC3D-DEEBB09D0B74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60036623-6B49-4E45-AC3D-DEEBB09D0B74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{921F08FC-1182-41D9-9081-025F8EAE4876}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{921F08FC-1182-41D9-9081-025F8EAE4876}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{921F08FC-1182-41D9-9081-025F8EAE4876}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{921F08FC-1182-41D9-9081-025F8EAE4876}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4343E6D1-57E5-49CB-A90C-765269DF7A49} = {F73D1CCA-47A4-4A40-9B43-334DFA6855D9}
+		{60036623-6B49-4E45-AC3D-DEEBB09D0B74} = {C37EF23A-0BA3-4C1C-93A0-CF35738F21CE}
+		{921F08FC-1182-41D9-9081-025F8EAE4876} = {C37EF23A-0BA3-4C1C-93A0-CF35738F21CE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6B2F2047-19D2-408C-A7B1-031520B56590}
+	EndGlobalSection
+EndGlobal
