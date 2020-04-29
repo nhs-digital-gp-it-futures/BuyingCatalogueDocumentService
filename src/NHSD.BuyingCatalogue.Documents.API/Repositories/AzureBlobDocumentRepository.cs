@@ -17,12 +17,12 @@ namespace NHSD.BuyingCatalogue.Documents.API.Repositories
             _client = client;
         }
 
-        public async Task<IDocument> DownloadAsync(Url url)
+        public async Task<IDocument> DownloadAsync(string? directoryName, string documentName)
         {
             try
             {
                 return new AzureBlobDocument(
-                    await _client.GetBlobClient(url).DownloadAsync());
+                    await _client.GetBlobClient(Url.Combine(directoryName, documentName)).DownloadAsync());
             }
             catch (RequestFailedException e)
             {

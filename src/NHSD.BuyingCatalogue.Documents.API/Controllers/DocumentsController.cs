@@ -44,8 +44,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
 
             try
             {
-                var url = Flurl.Url.Combine(_blobStorageSettings.DocumentDirectory, name);
-                downloadInfo = await _documentRepository.DownloadAsync(url);
+                downloadInfo = await _documentRepository.DownloadAsync(_blobStorageSettings.DocumentDirectory, name);
             }
             catch (DocumentRepositoryException e)
             {

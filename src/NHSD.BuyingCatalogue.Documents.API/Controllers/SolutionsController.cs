@@ -43,8 +43,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
 
             try
             {
-                var url = Flurl.Url.Combine(id, name);
-                downloadInfo = await _documentRepository.DownloadAsync(url);
+                downloadInfo = await _documentRepository.DownloadAsync(id, name);
             }
             catch (DocumentRepositoryException e)
             {

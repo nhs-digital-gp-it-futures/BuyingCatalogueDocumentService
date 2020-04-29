@@ -4,7 +4,6 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Common;
-using Flurl;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -30,7 +29,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<Url>())).Throws(exception);
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>())).Throws(exception);
 
             var logLevel = LogLevel.None;
             Exception actualException = null;
@@ -63,7 +62,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<Url>()))
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(exception);
 
             var azureBlobStorageSettings = new AzureBlobStorageSettings();
@@ -84,7 +83,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<Url>()))
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(exception);
 
             var azureBlobStorageSettings = new AzureBlobStorageSettings();
@@ -111,8 +110,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            var url = Url.Combine(azureBlobStorageSettings.DocumentDirectory, "directory");
-            mockStorage.Setup(s => s.DownloadAsync(url))
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(downloadInfo.Object);
 
             var controller = new DocumentsController(mockStorage.Object, Mock.Of<ILogger<DocumentsController>>(), azureBlobStorageSettings);

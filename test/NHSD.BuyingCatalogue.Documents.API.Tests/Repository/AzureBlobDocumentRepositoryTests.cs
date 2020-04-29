@@ -9,7 +9,6 @@ using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using FluentAssertions;
-using Flurl;
 using Moq;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
 using NUnit.Framework;
@@ -29,8 +28,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
 
             var storage = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient);
 
-            var url = Url.Combine("ID", "TheBlob");
-            Assert.ThrowsAsync<InvalidOperationException>(() => storage.DownloadAsync(url));
+            Assert.ThrowsAsync<InvalidOperationException>(() => storage.DownloadAsync("Id", "TheBlob"));
         }
 
         [Test]
@@ -45,9 +43,8 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
 
             var storage = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient);
 
-            var url = Url.Combine("ID", "TheBlob");
             var ex = Assert.ThrowsAsync<DocumentRepositoryException>(
-                () => storage.DownloadAsync(url));
+                () => storage.DownloadAsync("Id", "TheBlob"));
 
             ex.HttpStatusCode.Should().Be(statusCode);
             ex.Message.Should().Be(message);
@@ -63,8 +60,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
             var mockSdk = MockSdk.DownloadAsync().Returns(expectedStream, expectedContentType);
             var storage = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient);
 
-            var url = Url.Combine("ID", "TheBlob");
-            var result = await storage.DownloadAsync(url);
+            var result = await storage.DownloadAsync("Id", "TheBlob");
 
             result.Content.Should().Be(expectedStream);
             result.ContentType.Should().Be(expectedContentType);

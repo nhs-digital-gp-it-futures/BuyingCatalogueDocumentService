@@ -30,7 +30,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<Url>()))
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(exception);
 
             var logLevel = LogLevel.None;
@@ -61,7 +61,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<Url>()))
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(exception);
 
             var controller = new SolutionsController(mockStorage.Object, Mock.Of<ILogger<SolutionsController>>());
@@ -79,7 +79,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<Url>()))
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(exception);
 
             var controller = new SolutionsController(mockStorage.Object, Mock.Of<ILogger<SolutionsController>>());
@@ -100,7 +100,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<Url>()))
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(downloadInfo.Object);
 
             var controller = new SolutionsController(mockStorage.Object, Mock.Of<ILogger<SolutionsController>>());
