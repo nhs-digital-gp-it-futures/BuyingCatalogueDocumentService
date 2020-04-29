@@ -28,7 +28,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             }
         }
 
-        [Given(@"There are files in the blob storage with no solution id")]
+        [Given(@"There are files in the blob storage with no solution ID")]
         public async Task GivenThereAreFilesInTheBlobStorageWithNoSolutionId(Table fileTable)
         {
             foreach (var row in fileTable.CreateSet<FileTable>())

@@ -21,7 +21,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
     internal sealed class AzureBlobDocumentRepositoryTests
     {
         [Test]
-        public async Task DocumentNameDownloadAsync_ReturnsBlobDownloadInfo()
+        public async Task DownloadAsync_string_ReturnsBlobDownloadInfo()
         {
             var azureBlobStorageSettings = new AzureBlobStorageSettings { DocumentDirectory = "non-solution" };
             const string expectedContentType = "test/content";
@@ -30,14 +30,14 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
             var mockSdk = MockSdk.DownloadAsync().Returns(expectedStream, expectedContentType);
             var storage = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient, azureBlobStorageSettings);
 
-            var result = await storage.DocumentNameDownloadAsync("TheBlob");
+            var result = await storage.DownloadAsync("TheBlob");
 
             result.Content.Should().Be(expectedStream);
             result.ContentType.Should().Be(expectedContentType);
         }
 
         [Test]
-        public void DownloadAsync_DependencyThrowsException_DoesNotSwallow()
+        public void DownloadAsync_string_string_DependencyThrowsException_DoesNotSwallow()
         {
             var mockSdk = MockSdk
                 .DownloadAsync()
@@ -49,7 +49,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
         }
 
         [Test]
-        public void DownloadAsync_DependencyThrowsRequestFailedException_ThrowsDocumentRepositoryException()
+        public void DownloadAsync_string_string_DependencyThrowsRequestFailedException_ThrowsDocumentRepositoryException()
         {
             const string message = "This is a message.";
             const int statusCode = 500;
@@ -68,7 +68,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
         }
 
         [Test]
-        public async Task DownloadAsync_ReturnsBlobDownloadInfo()
+        public async Task DownloadAsync_string_string_ReturnsBlobDownloadInfo()
         {
             const string expectedContentType = "test/content";
 
@@ -84,7 +84,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
         }
 
         [TestCase]
-        public void GetFileNamesAsync_DependencyThrowsException_DoesNotSwallow()
+        public void GetFileNamesAsync_string_string_DependencyThrowsException_DoesNotSwallow()
         {
             var mockSdk = MockSdk.GetBlobsAsync().Throws<InvalidOperationException>();
             var documentRepository = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient, new AzureBlobStorageSettings());

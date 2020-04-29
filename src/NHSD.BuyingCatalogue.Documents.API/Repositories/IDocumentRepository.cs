@@ -5,7 +5,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Repositories
 {
     public interface IDocumentRepository
     {
-        Task<IDocument> DocumentNameDownloadAsync(string documentName);
+        Task<IDocument> DownloadAsync(string documentName);
 
         Task<IDocument> DownloadAsync(string? directoryName, string documentName);
 

@@ -29,7 +29,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DocumentNameDownloadAsync(It.IsAny<string>())).Throws(exception);
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>())).Throws(exception);
 
             var logLevel = LogLevel.None;
             Exception actualException = null;
@@ -42,9 +42,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockLogger = new MockLogger<DocumentsController>(Callback);
 
-            var azureBlobStorageSettings = new AzureBlobStorageSettings();
-            azureBlobStorageSettings.DocumentDirectory = "non-solution";
-
+            
             var controller = new DocumentsController(mockStorage.Object, mockLogger);
 
             await controller.DownloadAsync("directory");
@@ -62,11 +60,8 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DocumentNameDownloadAsync(It.IsAny<string>()))
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>()))
                 .Throws(exception);
-
-            var azureBlobStorageSettings = new AzureBlobStorageSettings();
-            azureBlobStorageSettings.DocumentDirectory = "non-solution";
 
             var controller = new DocumentsController(mockStorage.Object, Mock.Of<ILogger<DocumentsController>>());
 
@@ -83,11 +78,8 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DocumentNameDownloadAsync(It.IsAny<string>()))
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>()))
                 .Throws(exception);
-
-            var azureBlobStorageSettings = new AzureBlobStorageSettings();
-            azureBlobStorageSettings.DocumentDirectory = "non-solution";
 
             var controller = new DocumentsController(mockStorage.Object, Mock.Of<ILogger<DocumentsController>>());
 
@@ -110,7 +102,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DocumentNameDownloadAsync(It.IsAny<string>()))
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>()))
                 .ReturnsAsync(downloadInfo.Object);
 
             var controller = new DocumentsController(mockStorage.Object, Mock.Of<ILogger<DocumentsController>>());

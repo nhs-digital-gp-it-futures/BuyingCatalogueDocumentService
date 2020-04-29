@@ -16,7 +16,8 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
         private readonly IDocumentRepository _documentRepository;
         private readonly ILogger _logger;
 
-        public DocumentsController(IDocumentRepository documentRepository,
+        public DocumentsController(
+            IDocumentRepository documentRepository,
             ILogger<DocumentsController> logger)
         {
             _documentRepository = documentRepository;
@@ -39,7 +40,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
 
             try
             {
-                downloadInfo = await _documentRepository.DocumentNameDownloadAsync(name);
+                downloadInfo = await _documentRepository.DownloadAsync(name);
             }
             catch (DocumentRepositoryException e)
             {

@@ -9,7 +9,7 @@ using NHSD.BuyingCatalogue.Documents.API.Config;
 
 namespace NHSD.BuyingCatalogue.Documents.API.Repositories
 {
-    internal class AzureBlobDocumentRepository : IDocumentRepository
+    internal sealed class AzureBlobDocumentRepository : IDocumentRepository
     {
         private readonly BlobContainerClient _client;
         private readonly IAzureBlobStorageSettings _blobStorageSettings;
@@ -20,7 +20,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Repositories
             _blobStorageSettings = blobStorageSettings;
         }
 
-        public Task<IDocument> DocumentNameDownloadAsync(string documentName)
+        public Task<IDocument> DownloadAsync(string documentName)
         {
             return DownloadAsync(_blobStorageSettings.DocumentDirectory, documentName);
         }

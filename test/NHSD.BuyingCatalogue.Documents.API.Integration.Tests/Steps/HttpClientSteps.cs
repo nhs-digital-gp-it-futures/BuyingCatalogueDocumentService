@@ -83,9 +83,11 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             using var responseStream = await response.Content.ReadAsStreamAsync();
             var responseBytes = await GetBytesFromStream(responseStream);
 
-            FileStream ourFileStream = File.OpenRead(solutionId is null
+            var path = solutionId is null
                 ? Path.Combine(sampleDataPath, "non-solution", fileName)
-                : Path.Combine(sampleDataPath, solutionId, fileName));
+                : Path.Combine(sampleDataPath, solutionId, fileName);
+
+            FileStream ourFileStream = File.OpenRead(path);
 
             var ourFileBytes = await GetBytesFromStream(ourFileStream);
             responseBytes.Should().BeEquivalentTo(ourFileBytes);
