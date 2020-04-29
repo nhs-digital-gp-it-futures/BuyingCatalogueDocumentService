@@ -5,16 +5,24 @@ using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Flurl;
+using NHSD.BuyingCatalogue.Documents.API.Config;
 
 namespace NHSD.BuyingCatalogue.Documents.API.Repositories
 {
     internal class AzureBlobDocumentRepository : IDocumentRepository
     {
         private readonly BlobContainerClient _client;
+        private readonly IAzureBlobStorageSettings _blobStorageSettings;
 
-        public AzureBlobDocumentRepository(BlobContainerClient client)
+        public AzureBlobDocumentRepository(BlobContainerClient client, IAzureBlobStorageSettings blobStorageSettings)
         {
             _client = client;
+            _blobStorageSettings = blobStorageSettings;
+        }
+
+        public Task<IDocument> DocumentNameDownloadAsync(string documentName)
+        {
+            return DownloadAsync(_blobStorageSettings.DocumentDirectory, documentName);
         }
 
         public async Task<IDocument> DownloadAsync(string? directoryName, string documentName)

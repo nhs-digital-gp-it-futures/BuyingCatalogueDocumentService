@@ -4,7 +4,7 @@ using Azure.Core;
 
 namespace NHSD.BuyingCatalogue.Documents.API.Config
 {
-    public sealed class AzureBlobStorageRetrySettings
+    internal sealed class AzureBlobStorageRetrySettings
     {
         public TimeSpan Delay { get; set; }
 

@@ -29,7 +29,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>())).Throws(exception);
+            mockStorage.Setup(s => s.DocumentNameDownloadAsync(It.IsAny<string>())).Throws(exception);
 
             var logLevel = LogLevel.None;
             Exception actualException = null;
@@ -45,7 +45,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
             var azureBlobStorageSettings = new AzureBlobStorageSettings();
             azureBlobStorageSettings.DocumentDirectory = "non-solution";
 
-            var controller = new DocumentsController(mockStorage.Object, mockLogger, azureBlobStorageSettings);
+            var controller = new DocumentsController(mockStorage.Object, mockLogger);
 
             await controller.DownloadAsync("directory");
 
@@ -62,13 +62,13 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
+            mockStorage.Setup(s => s.DocumentNameDownloadAsync(It.IsAny<string>()))
                 .Throws(exception);
 
             var azureBlobStorageSettings = new AzureBlobStorageSettings();
             azureBlobStorageSettings.DocumentDirectory = "non-solution";
 
-            var controller = new DocumentsController(mockStorage.Object, Mock.Of<ILogger<DocumentsController>>(), azureBlobStorageSettings);
+            var controller = new DocumentsController(mockStorage.Object, Mock.Of<ILogger<DocumentsController>>());
 
             var result = await controller.DownloadAsync("directory") as StatusCodeResult;
 
@@ -83,13 +83,13 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
+            mockStorage.Setup(s => s.DocumentNameDownloadAsync(It.IsAny<string>()))
                 .Throws(exception);
 
             var azureBlobStorageSettings = new AzureBlobStorageSettings();
             azureBlobStorageSettings.DocumentDirectory = "non-solution";
 
-            var controller = new DocumentsController(mockStorage.Object, Mock.Of<ILogger<DocumentsController>>(), azureBlobStorageSettings);
+            var controller = new DocumentsController(mockStorage.Object, Mock.Of<ILogger<DocumentsController>>());
 
             Assert.ThrowsAsync<InvalidOperationException>(() => controller.DownloadAsync("directory"));
         }
@@ -110,10 +110,10 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
+            mockStorage.Setup(s => s.DocumentNameDownloadAsync(It.IsAny<string>()))
                 .ReturnsAsync(downloadInfo.Object);
 
-            var controller = new DocumentsController(mockStorage.Object, Mock.Of<ILogger<DocumentsController>>(), azureBlobStorageSettings);
+            var controller = new DocumentsController(mockStorage.Object, Mock.Of<ILogger<DocumentsController>>());
 
             var result = await controller.DownloadAsync("directory") as FileStreamResult;
 

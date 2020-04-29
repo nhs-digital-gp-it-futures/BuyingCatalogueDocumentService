@@ -1,10 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NHSD.BuyingCatalogue.Documents.API.Config;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
 
 namespace NHSD.BuyingCatalogue.Documents.API.Controllers
@@ -17,15 +15,12 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
     {
         private readonly IDocumentRepository _documentRepository;
         private readonly ILogger _logger;
-        private readonly IAzureBlobStorageSettings _blobStorageSettings;
 
         public DocumentsController(IDocumentRepository documentRepository,
-            ILogger<DocumentsController> logger,
-            IAzureBlobStorageSettings blobStorageSettings)
+            ILogger<DocumentsController> logger)
         {
             _documentRepository = documentRepository;
             _logger = logger;
-            _blobStorageSettings = blobStorageSettings ?? throw new ArgumentNullException(nameof(blobStorageSettings));
         }
 
         [HttpGet]
@@ -44,7 +39,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
 
             try
             {
-                downloadInfo = await _documentRepository.DownloadAsync(_blobStorageSettings.DocumentDirectory, name);
+                downloadInfo = await _documentRepository.DocumentNameDownloadAsync(name);
             }
             catch (DocumentRepositoryException e)
             {

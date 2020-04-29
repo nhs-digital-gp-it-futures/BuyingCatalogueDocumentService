@@ -2,7 +2,7 @@
 
 namespace NHSD.BuyingCatalogue.Documents.API.Config
 {
-    public sealed class AzureBlobStorageHealthCheckSettings
+    internal sealed class AzureBlobStorageHealthCheckSettings
     {
         public TimeSpan Timeout { get; set; }
     }

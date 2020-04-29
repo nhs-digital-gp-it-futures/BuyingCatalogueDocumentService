@@ -10,6 +10,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using FluentAssertions;
 using Moq;
+using NHSD.BuyingCatalogue.Documents.API.Config;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
 using NUnit.Framework;
 
@@ -20,13 +21,29 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
     internal sealed class AzureBlobDocumentRepositoryTests
     {
         [Test]
+        public async Task DocumentNameDownloadAsync_ReturnsBlobDownloadInfo()
+        {
+            var azureBlobStorageSettings = new AzureBlobStorageSettings { DocumentDirectory = "non-solution" };
+            const string expectedContentType = "test/content";
+
+            using var expectedStream = new MemoryStream();
+            var mockSdk = MockSdk.DownloadAsync().Returns(expectedStream, expectedContentType);
+            var storage = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient, azureBlobStorageSettings);
+
+            var result = await storage.DocumentNameDownloadAsync("TheBlob");
+
+            result.Content.Should().Be(expectedStream);
+            result.ContentType.Should().Be(expectedContentType);
+        }
+
+        [Test]
         public void DownloadAsync_DependencyThrowsException_DoesNotSwallow()
         {
             var mockSdk = MockSdk
                 .DownloadAsync()
                 .Throws(new InvalidOperationException());
 
-            var storage = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient);
+            var storage = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient, new AzureBlobStorageSettings());
 
             Assert.ThrowsAsync<InvalidOperationException>(() => storage.DownloadAsync("Id", "TheBlob"));
         }
@@ -41,7 +58,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
                 .DownloadAsync()
                 .Throws(new RequestFailedException(statusCode, message));
 
-            var storage = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient);
+            var storage = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient, new AzureBlobStorageSettings());
 
             var ex = Assert.ThrowsAsync<DocumentRepositoryException>(
                 () => storage.DownloadAsync("Id", "TheBlob"));
@@ -58,7 +75,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
             using var expectedStream = new MemoryStream();
 
             var mockSdk = MockSdk.DownloadAsync().Returns(expectedStream, expectedContentType);
-            var storage = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient);
+            var storage = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient, new AzureBlobStorageSettings());
 
             var result = await storage.DownloadAsync("Id", "TheBlob");
 
@@ -70,7 +87,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
         public void GetFileNamesAsync_DependencyThrowsException_DoesNotSwallow()
         {
             var mockSdk = MockSdk.GetBlobsAsync().Throws<InvalidOperationException>();
-            var documentRepository = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient);
+            var documentRepository = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient, new AzureBlobStorageSettings());
 
             Assert.ThrowsAsync<InvalidOperationException>(
                 async () => await documentRepository.GetFileNamesAsync(string.Empty).ToListAsync());
@@ -83,7 +100,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
         public async Task GetFileNamesAsync_HasFilesInDirectory_ReturnsExpectedFileNames(string directory, params string[] files)
         {
             var mockSdk = MockSdk.GetBlobsAsync().Returns(directory, files);
-            var documentRepository = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient);
+            var documentRepository = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient, new AzureBlobStorageSettings());
 
             var fileNames = await documentRepository.GetFileNamesAsync(directory).ToListAsync();
 

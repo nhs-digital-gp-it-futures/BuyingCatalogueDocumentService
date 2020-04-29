@@ -5,7 +5,7 @@ using Azure.Storage.Blobs;
 
 namespace NHSD.BuyingCatalogue.Documents.API.Config
 {
-    public sealed class AzureBlobStorageSettings : IAzureBlobStorageSettings
+    internal sealed class AzureBlobStorageSettings : IAzureBlobStorageSettings
     {
         // Ignored to prevent access keys being logged
         [JsonIgnore]
