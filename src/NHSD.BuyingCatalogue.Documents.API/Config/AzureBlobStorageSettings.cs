@@ -5,13 +5,15 @@ using Azure.Storage.Blobs;
 
 namespace NHSD.BuyingCatalogue.Documents.API.Config
 {
-    internal sealed class AzureBlobStorageSettings : IAzureBlobStorageSettings
+    public sealed class AzureBlobStorageSettings : IAzureBlobStorageSettings
     {
         // Ignored to prevent access keys being logged
         [JsonIgnore]
         public string? ConnectionString { get; set; }
 
         public string? ContainerName { get; set; }
+
+        public string? DocumentDirectory { get; set; }
 
         public AzureBlobStorageHealthCheckSettings? HealthCheck { get; set; }
 

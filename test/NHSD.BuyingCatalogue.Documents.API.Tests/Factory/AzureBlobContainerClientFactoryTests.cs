@@ -3,7 +3,7 @@ using NHSD.BuyingCatalogue.Documents.API.Config;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
 using NUnit.Framework;
 
-namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
+namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Factory
 {
     [TestFixture]
     internal sealed class AzureBlobContainerClientFactoryTests

@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NHSD.BuyingCatalogue.Documents.API.Config;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
 
 namespace NHSD.BuyingCatalogue.Documents.API.Controllers
@@ -13,22 +13,23 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
     [ApiController]
     [Produces("application/json")]
     [AllowAnonymous]
-    public sealed class SolutionsController : ControllerBase
+    public sealed class DocumentsController : ControllerBase
     {
         private readonly IDocumentRepository _documentRepository;
         private readonly ILogger _logger;
+        private readonly IAzureBlobStorageSettings _blobStorageSettings;
 
-        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "MS DI requires closed-generic ILogger type")]
-        public SolutionsController(
-            IDocumentRepository documentRepository,
-            ILogger<SolutionsController> logger)
+        public DocumentsController(IDocumentRepository documentRepository,
+            ILogger<DocumentsController> logger,
+            IAzureBlobStorageSettings blobStorageSettings)
         {
             _documentRepository = documentRepository;
             _logger = logger;
+            _blobStorageSettings = blobStorageSettings ?? throw new ArgumentNullException(nameof(blobStorageSettings));
         }
 
         [HttpGet]
-        [Route("{id}/documents/{name}")]
+        [Route("{name}")]
         [Produces("application/octet-stream", "application/json")]
         [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status206PartialContent)]
@@ -37,13 +38,13 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> DownloadAsync(string id, string name)
+        public async Task<IActionResult> DownloadAsync(string name)
         {
             IDocument downloadInfo;
 
             try
             {
-                var url = Flurl.Url.Combine(id, name);
+                var url = Flurl.Url.Combine(_blobStorageSettings.DocumentDirectory, name);
                 downloadInfo = await _documentRepository.DownloadAsync(url);
             }
             catch (DocumentRepositoryException e)
@@ -54,12 +55,5 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
 
             return File(downloadInfo.Content, downloadInfo.ContentType);
         }
-
-        [HttpGet]
-        [Route("{id}/documents")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<IAsyncEnumerable<string>> GetDocumentsBySolutionId(string id)
-            => Ok(_documentRepository.GetFileNamesAsync(id));
     }
 }
