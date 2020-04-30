@@ -6,13 +6,13 @@
 Background:
     Given There are files in the blob storage with no solution ID
         | FileNames |
-        | File1.txt |
+        | File1.xlsx |
 
 Scenario: 1. Correct file contents are returned
-    When a GET File1.txt document request is made
+    When a GET File1.xlsx document request is made
     Then a response with status code 200 is returned
-    Then the content of the response is equal to File1.txt belonging to NULL
+    Then the content of the response is equal to File1.xlsx belonging to NULL
 
 Scenario: 2. No file contents are returned for a file that doesn't exist.
-    When a GET File2.txt document request is made
+    When a GET File2.xlsx document request is made
     Then a response with status code 404 is returned

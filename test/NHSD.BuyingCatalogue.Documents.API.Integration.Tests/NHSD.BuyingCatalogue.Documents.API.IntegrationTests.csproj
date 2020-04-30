@@ -22,4 +22,7 @@
     <ItemGroup>
         <None Include="SampleData\**" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="SampleData\non-solution\" />
+    </ItemGroup>
 </Project>
