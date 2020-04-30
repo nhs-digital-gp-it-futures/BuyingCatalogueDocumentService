@@ -6,9 +6,9 @@
 Background:
     Given There are files in the blob storage with no solution ID
         | FileNames |
-        | File1.txt |
+        | File1.xlsx |
 
 Scenario: 1. Azure blob storage is not available
     Given the blob storage service is down
-    When a GET File1.txt document request is made
+    When a GET File1.xlsx document request is made
     Then a response with status code 500 is returned
