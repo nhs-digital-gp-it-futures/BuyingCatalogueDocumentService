@@ -13,6 +13,8 @@ namespace NHSD.BuyingCatalogue.Documents.API.Config
 
         public string? ContainerName { get; set; }
 
+        public string? DocumentDirectory { get; set; }
+
         public AzureBlobStorageHealthCheckSettings? HealthCheck { get; set; }
 
         public AzureBlobStorageRetrySettings? Retry { get; set; }

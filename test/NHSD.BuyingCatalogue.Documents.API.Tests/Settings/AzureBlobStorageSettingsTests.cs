@@ -2,7 +2,7 @@
 using NHSD.BuyingCatalogue.Documents.API.Config;
 using NUnit.Framework;
 
-namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
+namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Settings
 {
     [TestFixture]
     internal sealed class AzureBlobStorageSettingsTests

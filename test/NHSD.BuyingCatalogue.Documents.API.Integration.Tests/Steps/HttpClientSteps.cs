@@ -43,6 +43,12 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             await GetResponseFromEndpoint(solutionId, fileName);
         }
 
+        [When("a GET (.*) document request is made")]
+        public async Task GetDocumentAsStreamForSolution(string fileName)
+        {
+            await GetResponseFromDocumentEndpointWithNoSolutionId(fileName);
+        }
+
         [Then(@"a response with status code ([\d]+) is returned")]
         public void AResponseIsReturned(int code)
         {
@@ -66,6 +72,9 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
         [Then(@"the content of the response is equal to (.*) belonging to (.*)")]
         public async Task ContentOfTheResponseIsEqualTo(string fileName, string solutionId)
         {
+            if (solutionId == "NULL")
+                solutionId = null;
+
             const string sampleDataPath = "SampleData";
 
             var response = _context["Response"] as HttpResponseMessage;
@@ -74,9 +83,13 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             using var responseStream = await response.Content.ReadAsStreamAsync();
             var responseBytes = await GetBytesFromStream(responseStream);
 
-            using var ourFileStream = File.OpenRead(Path.Combine(sampleDataPath, solutionId, fileName));
-            var ourFileBytes = await GetBytesFromStream(ourFileStream);
+            var path = solutionId is null
+                ? Path.Combine(sampleDataPath, "non-solution", fileName)
+                : Path.Combine(sampleDataPath, solutionId, fileName);
 
+            FileStream ourFileStream = File.OpenRead(path);
+
+            var ourFileBytes = await GetBytesFromStream(ourFileStream);
             responseBytes.Should().BeEquivalentTo(ourFileBytes);
         }
 
@@ -85,7 +98,16 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             using var client = new HttpClient();
 
             var slnId = _azureBlobStorageScenarioContext.TryToGetGuidFromSolutionId(solutionId);
-            var response = await client.GetAsync(new Uri($"{_context["RootUrl"]}/{slnId}/documents/{fileName}"))
+            var response = await client.GetAsync(new Uri($"{_context["RootUrl"]}/solutions/{slnId}/documents/{fileName}"))
+                .ConfigureAwait(false);
+            _context["Response"] = response;
+        }
+
+        private async Task GetResponseFromDocumentEndpointWithNoSolutionId(string fileName = null)
+        {
+            using var client = new HttpClient();
+
+            var response = await client.GetAsync(new Uri($"{_context["RootUrl"]}/documents/{fileName}"))
                 .ConfigureAwait(false);
             _context["Response"] = response;
         }
@@ -104,8 +126,8 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
 
         private static class ServiceUrl
         {
-            internal const string Working = "http://localhost:5201/api/v1/Solutions";
-            internal const string Broken = "http://localhost:5211/api/v1/Solutions";
+            internal const string Working = "http://localhost:5201/api/v1";
+            internal const string Broken = "http://localhost:5211/api/v1";
         }
     }
 }
