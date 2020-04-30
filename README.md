@@ -10,19 +10,7 @@ It interfaces with Azure Blob Storage, via the .Net Azure Storage SDK.
 ### Overview of the application code
 This repo consists of one service using **.NET Core** and **Docker**.
 
-It contains two main endpoints:
-
-- api/v1/Solutions/{solutionId}/documents
-  - Returns a collection of all documents for a given solution
-- api/v1/Solutions/{solutionId}/documents/{filename}
-  - Returns a stream containing the document for a given solution
-
-Examples:
-
-- api/v1/Solutions/100000-001/documents
-  - Returns {'roadmap.pdf', 'integrations.pdf'}
-- api/v1/Solutions/100000-001/documents/roadmap.pdf
-  - Returns a file stream containing roadmap.pdf
+List of all endpoints the application exposes can be found [here](http://localhost:5201/swagger/index.html)
 
 The application is broken down into the following project libraries:
 
@@ -48,37 +36,26 @@ The application is broken down into the following project libraries:
 To start up the API, run the following command from the root directory of the repository.
 
 ```bash
-docker-compose up --build -d
+docker-compose -f "docker-compose.integration.yml" up -d
 ```
 
 This will start the API in a docker container, as well as Azure Storage, emulated within
-another container. It will also populate the emulated Azure Storage with the following
-files:
-
-- 100000-001
-  - integrations.pdf
-  - roadmap.pdf
-- 100000-002
-  - integrations.pdf
-  - roadmap.pdf
-- 100000-003
-  - integrations.pdf
-  - roadmap.pdf
+another container.
 
 You can verify that the API has launched correctly by navigating to the following urls via any web browser.
 
-- <http://localhost:8090/api/v1/Solutions/health/live>
-- <http://localhost:8090/api/v1/Solutions/health/ready>
+- <http://localhost:5201/health/live>
+- <http://localhost:5201/health/ready>
 
 If both URLs return 'Healthy', the environment is configured correctly, and can be accessed via the public endpoints.
 
-If the ready URL returns 'Unhealthy', the Azure Storage container has failed to launch, or cannot be accessed.
+If the ready URL returns 'Degraded', the Azure Storage container has failed to launch, or cannot be accessed.
 
 ### Stopping
 To stop the API, run the following command from the root directory of the repository.
 
 ```bash
-docker-compose down -v
+docker-compose -f "docker-compose.integration.yml" down -v
 ```
 
 This will stop both the API docker container and the Azure Storage docker container.
