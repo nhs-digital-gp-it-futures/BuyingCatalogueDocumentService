@@ -37,13 +37,13 @@ steps:
 - task: DockerCompose@0
   displayName: 'Build: Dev'
   inputs:
-      containerregistrytype: 'Azure Container Registry'
-      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-      azureContainerRegistry: '{"loginServer":"gpitfuturesdevacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesdevacr"}'
-      dockerComposeFile: '**/docker-compose-file-uploader.yml'
-      action: 'Build services'
-      additionalImageTags: '$(Build.BuildNumber)'
-      includeSourceTags: true
+    containerregistrytype: 'Azure Container Registry'
+    azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+    azureContainerRegistry: '{"loginServer":"gpitfuturesdevacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesdevacr"}'
+    dockerComposeFile: '**/docker-compose-file-uploader.yml'
+    action: 'Build services'
+    additionalImageTags: '$(Build.BuildNumber)'
+    includeSourceTags: true
 
 - task: DockerCompose@0
   displayName: 'Docker Push: Dev'
