@@ -3,7 +3,7 @@ using FluentAssertions;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
 using NUnit.Framework;
 
-namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
+namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]

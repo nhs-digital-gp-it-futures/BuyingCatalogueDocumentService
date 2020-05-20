@@ -5,15 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Common;
+using Flurl;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NHSD.BuyingCatalogue.Documents.API.Controllers;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
+using NHSD.BuyingCatalogue.Documents.API.UnitTests.Mocks;
 using NUnit.Framework;
 
-namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
+namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
@@ -27,6 +29,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
                 StatusCodes.Status502BadGateway);
 
             var mockStorage = new Mock<IDocumentRepository>();
+
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(exception);
 
@@ -57,6 +60,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
                 StatusCodes.Status502BadGateway);
 
             var mockStorage = new Mock<IDocumentRepository>();
+
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(exception);
 
@@ -74,6 +78,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
             var exception = new InvalidOperationException();
 
             var mockStorage = new Mock<IDocumentRepository>();
+
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(exception);
 
@@ -94,6 +99,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
             downloadInfo.Setup(d => d.ContentType).Returns(expectedContentType);
 
             var mockStorage = new Mock<IDocumentRepository>();
+
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(downloadInfo.Object);
 
@@ -124,31 +130,6 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
             okResult.StatusCode.Should().Be(200);
             okResult.Value.Should().Be(mockEnumerable.Object);
             mockStorage.Verify(x => x.GetFileNamesAsync("Foobar"), Times.Once);
-        }
-
-        // This hand-rolled mock is necessary because we currently have a dependency
-        // on ILogger<T> for logging. It is not possible to mock dynamically because
-        // the FormattedLogValues framework struct is internal.
-        // Recommend that we refactor by defining our owning logging abstraction.
-        private class MockLogger<T> : ILogger<T>
-        {
-            private readonly Action<LogLevel, Exception> logCallback;
-
-            internal MockLogger(Action<LogLevel, Exception> logCallback) => this.logCallback = logCallback;
-
-            public IDisposable BeginScope<TState>(TState state) => throw new NotSupportedException();
-
-            public bool IsEnabled(LogLevel logLevel) => throw new NotSupportedException();
-
-            public void Log<TState>(
-                LogLevel logLevel,
-                EventId eventId,
-                TState state,
-                Exception exception,
-                Func<TState, Exception, string> formatter)
-            {
-                logCallback(logLevel, exception);
-            }
         }
     }
 }
