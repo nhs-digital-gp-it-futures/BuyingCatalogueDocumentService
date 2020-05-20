@@ -7,7 +7,7 @@ using NHSD.BuyingCatalogue.Documents.API.Logging;
 using NUnit.Framework;
 using Serilog.Events;
 
-namespace NHSD.BuyingCatalogue.Documents.API.UnitTests
+namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Logging
 {
     [TestFixture]
     internal sealed class SerilogRequestLoggingOptionsTests

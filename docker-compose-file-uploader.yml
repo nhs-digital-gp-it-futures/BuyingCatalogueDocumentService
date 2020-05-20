@@ -1,0 +1,11 @@
+version: '3.5'
+
+services:
+
+#File Upload
+  file.upload:
+    image: ${REGISTRY:-nhsd}/buying-catalogue/file-uploader:${TAG:-latest}
+    container_name: file_uploader
+    build:
+      context: .
+      dockerfile: Dockerfile.fileupload

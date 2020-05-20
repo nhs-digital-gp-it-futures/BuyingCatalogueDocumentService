@@ -36,6 +36,17 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
             response.GetRawResponse().Status.Should().Be(201);
         }
 
+        public async Task InsertFileToStorageNoSolutionId(string fileName)
+        {
+            var blobClient = _blobContainer.GetBlobClient(Path.Combine("non-solution", fileName));
+            using var uploadFileStream = File.OpenRead(Path.Combine(SampleDataPath, "non-solution", fileName));
+            var response = await blobClient
+                .UploadAsync(uploadFileStream, new BlobHttpHeaders())
+                .ConfigureAwait(false);
+
+            response.GetRawResponse().Status.Should().Be(201);
+        }
+        
         public async Task ClearStorage()
         {
             foreach (var blob in _solutionIdsToGuids.Values.SelectMany(directory => _blobContainer.GetBlobs(prefix: directory)))
