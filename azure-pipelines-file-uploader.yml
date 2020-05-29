@@ -6,6 +6,11 @@ variables:
 trigger:
 - development
 
+pr:
+  branches:
+    exclude:
+    - '*'
+
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -29,7 +34,6 @@ jobs:
   variables:
     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
   dependsOn: version
-  condition: and(succeeded(), ne(variables['build.reason'], 'PullRequest'))
   steps:
   - task: DockerInstaller@0
     inputs:
