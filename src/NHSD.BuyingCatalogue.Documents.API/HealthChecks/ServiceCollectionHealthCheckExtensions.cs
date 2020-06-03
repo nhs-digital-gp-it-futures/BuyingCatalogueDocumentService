@@ -13,7 +13,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.HealthChecks
                     storageSettings.ConnectionString,
                     storageSettings.ContainerName,
                     "Azure Blob Storage",
-                    HealthStatus.Degraded,
+                    HealthStatus.Unhealthy,
                     new[] { HealthCheckTags.Ready },
                     storageSettings.HealthCheck?.Timeout)
                 .AddCheck("self", () => HealthCheckResult.Healthy(), new[] { HealthCheckTags.Live });
