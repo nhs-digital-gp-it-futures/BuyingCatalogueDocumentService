@@ -27,6 +27,8 @@ spec:
                 secretKeyRef:            
                   name: {{ .Values.azureBlobStorage.connectionSecret.name }}
                   key: {{ .Values.azureBlobStorage.connectionSecret.key }} 
+          - name: CONTAINER_NAME
+            value: {{ .Values.azureBlobStorage.containerName }}
           {{- if .Values.env.values -}}
           {{- range .Values.env.values }}
             - name: {{ .name }}
