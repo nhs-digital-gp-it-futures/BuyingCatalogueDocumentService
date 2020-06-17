@@ -1,10 +1,11 @@
 variables:
   - name: dockerVersion
     value: '19.03.5'
-  - group: dev-acr-secrets
+  - group: dev-secrets
 
 trigger:
 - development
+- master
 
 pr:
   branches:
