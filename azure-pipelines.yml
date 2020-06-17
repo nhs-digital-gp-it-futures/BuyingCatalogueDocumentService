@@ -5,7 +5,7 @@ variables:
     value: '3.x'
   - name: MSBUILDSINGLELOADCONTEXT
     value: '1'
-  - group: dev-acr-secrets
+  - group: dev-secrets
 
 trigger:
 - master
