@@ -5,6 +5,7 @@ variables:
 
 trigger:
 - development
+- master
 
 pr:
   branches:
