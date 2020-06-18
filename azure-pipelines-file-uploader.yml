@@ -8,9 +8,8 @@ trigger:
 - master
 
 pr:
-  branches:
-    exclude:
-    - '*'
+- master
+- development
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -18,6 +17,7 @@ pool:
 jobs:
 - job: version
   displayName: Work out Version
+  condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
   pool:
     vmImage: 'ubuntu-latest'
   steps:
@@ -35,6 +35,7 @@ jobs:
   variables:
     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
   dependsOn: version
+  condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
   steps:
   - task: DockerInstaller@0
     inputs:

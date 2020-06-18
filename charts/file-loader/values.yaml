@@ -54,6 +54,8 @@ azureBlobStorage:
     key: 
   containerName: container-1
 
+insertTestData: true
+
 env:
   configmap:
   secrets:
