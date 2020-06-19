@@ -13,6 +13,7 @@ pool:
 jobs:
 - job: version
   displayName: Work out Version
+  condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
   pool:
     vmImage: 'ubuntu-latest'
   steps:
@@ -27,6 +28,7 @@ jobs:
 
 - job: dockerBuildAndPush
   displayName: Build & push docker containers to the acr
+  condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
   variables:
     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
   dependsOn: version
