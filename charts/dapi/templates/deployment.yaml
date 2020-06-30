@@ -54,7 +54,7 @@ spec:
                     name: {{ .Values.azureBlobStorage.connectionSecret.name }}
                     key: {{ .Values.azureBlobStorage.connectionSecret.key }}
             - name: AZUREBLOBSTORAGE__CONTAINERNAME
-              value:  {{ .Values.azureBlobStorage.containerName | quote }}
+              {{- toYaml .Values.azureBlobStorage.containerName | nindent 14 }}
             {{- if .Values.env.values -}}
             {{- range .Values.env.values }}
               - name: {{ .name }}

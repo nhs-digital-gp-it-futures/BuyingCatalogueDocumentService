@@ -22,13 +22,17 @@ spec:
         resources:
             {{- toYaml .Values.resources | nindent 12 }}
         env:
+          {{- with .Values.azureBlobStorage }}
           - name: AZURE_STORAGE_CONNECTION_STRING
             valueFrom:
                 secretKeyRef:            
-                  name: {{ .Values.azureBlobStorage.connectionSecret.name }}
-                  key: {{ .Values.azureBlobStorage.connectionSecret.key }} 
+                  name: {{ .connectionSecret.name }}
+                  key: {{ .connectionSecret.key }} 
           - name: CONTAINER_NAME
-            value: {{ .Values.azureBlobStorage.containerName }}
+            {{- toYaml .containerName | nindent 12 }}
+          {{- end }}
+          - name: INSERT_TEST_DATA
+            value: {{ .Values.insertTestData | quote }}
           {{- if .Values.env.values -}}
           {{- range .Values.env.values }}
             - name: {{ .name }}
