@@ -29,7 +29,7 @@ spec:
                   name: {{ .connectionSecret.name }}
                   key: {{ .connectionSecret.key }} 
           - name: CONTAINER_NAME
-            value: {{ .containerName }}
+            {{- toYaml .containerName | nindent 12 }}
           {{- end }}
           - name: INSERT_TEST_DATA
             value: {{ .Values.insertTestData | quote }}

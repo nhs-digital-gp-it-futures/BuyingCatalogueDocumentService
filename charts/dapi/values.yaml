@@ -72,7 +72,11 @@ azureBlobStorage:
   connectionSecret: 
     name: 
     key:
-  containerName: container-1
+  containerName: 
+    valueFrom:
+      configMapKeyRef:
+        name: 
+        key: 
 
 env:
   configmap:
