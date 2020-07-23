@@ -119,7 +119,7 @@ jobs:
           -u "gpitfuturesdevacr" \
           -p $(gpitfuturesdevacr-pass) \
           $chartPackage   
-    failOnStderr: true
+    failOnStderr: false
     name: helmPush
     displayName: 'Push helm to az acr'
 
