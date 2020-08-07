@@ -37,7 +37,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             await GetResponseFromEndpoint(solutionId);
         }
 
-        [When("a GET (.*) document request is made for solution (.*)")]
+        [When("a GET '(.*)' document request is made for solution (.*)")]
         public async Task GetDocumentAsStreamForSolution(string fileName, string solutionId)
         {
             await GetResponseFromEndpoint(solutionId, fileName);
@@ -69,7 +69,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             content.Select(t => t.Value<string>()).Should().BeEquivalentTo(elements.FileNames);
         }
 
-        [Then(@"the content of the response is equal to (.*) belonging to (.*)")]
+        [Then(@"the content of the response is equal to '(.*)' belonging to (.*)")]
         public async Task ContentOfTheResponseIsEqualTo(string fileName, string solutionId)
         {
             if (solutionId == "NULL")
