@@ -10,5 +10,5 @@ Background:
 
 Scenario: 1. Azure blob storage is not available
 	Given the blob storage service is down
-	When a GET File1.txt document request is made for solution sol1
+	When a GET 'File1.txt' document request is made for solution sol1
 	Then a response with status code 500 is returned
