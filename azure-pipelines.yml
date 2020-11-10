@@ -9,11 +9,9 @@ variables:
 
 trigger:
 - master
-- development
 
 pr:
 - master
-- development
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -125,7 +123,7 @@ jobs:
 
   - task: DockerCompose@0
     displayName: 'Docker Build: Test'
-    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/development')))
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
       azureContainerRegistry: '{"loginServer":"gpitfuturestestacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-test-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturestestacr"}'
@@ -136,7 +134,7 @@ jobs:
 
   - task: DockerCompose@0
     displayName: 'Docker Push: Test'
-    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/development')))
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
       azureContainerRegistry: '{"loginServer":"gpitfuturestestacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-test-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturestestacr"}'
@@ -147,7 +145,7 @@ jobs:
 
   - task: DockerCompose@0
     displayName: 'Docker Build: Prod'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Prod)'
       azureContainerRegistry: '{"loginServer":"gpitfuturesprodacr.azurecr.io", "id" : "/subscriptions/d1be8dbc-1a9f-4b7b-ba51-037116110e00/resourceGroups/gpitfutures-prod-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesprodacr"}'
@@ -158,7 +156,7 @@ jobs:
 
   - task: DockerCompose@0
     displayName: 'Docker Push: Prod'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Prod)'
       azureContainerRegistry: '{"loginServer":"gpitfuturesprodacr.azurecr.io", "id" : "/subscriptions/d1be8dbc-1a9f-4b7b-ba51-037116110e00/resourceGroups/gpitfutures-prod-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturesprodacr"}'
