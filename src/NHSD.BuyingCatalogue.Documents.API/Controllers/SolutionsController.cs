@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Mime;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,8 +11,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    [Produces("application/json")]
-    [AllowAnonymous]
+    [Produces(MediaTypeNames.Application.Json)]
     public sealed class SolutionsController : ControllerBase
     {
         private readonly IDocumentRepository _documentRepository;
@@ -29,7 +28,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
 
         [HttpGet]
         [Route("{id}/documents/{name}")]
-        [Produces("application/octet-stream", "application/json")]
+        [Produces(MediaTypeNames.Application.Octet, MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status206PartialContent)]
         [ProducesErrorResponseType(typeof(void))]

@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NHSD.BuyingCatalogue.Documents.API.Config;
 using NHSD.BuyingCatalogue.Documents.API.Controllers;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
 using NHSD.BuyingCatalogue.Documents.API.UnitTests.Mocks;
@@ -60,8 +59,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>()))
-                .Throws(exception);
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>())).Throws(exception);
 
             var controller = new DocumentsController(mockStorage.Object, Mock.Of<ILogger<DocumentsController>>());
 
@@ -78,8 +76,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>()))
-                .Throws(exception);
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>())).Throws(exception);
 
             var controller = new DocumentsController(mockStorage.Object, Mock.Of<ILogger<DocumentsController>>());
 
@@ -91,10 +88,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
         {
             const string expectedContentType = "test/content-type";
 
-            using var expectedStream = new MemoryStream(Encoding.UTF8.GetBytes("Hello world!"));
-
-            var azureBlobStorageSettings = new AzureBlobStorageSettings();
-            azureBlobStorageSettings.DocumentDirectory = "non-solution";
+            await using var expectedStream = new MemoryStream(Encoding.UTF8.GetBytes("Hello world!"));
 
             var downloadInfo = new Mock<IDocument>();
             downloadInfo.Setup(d => d.Content).Returns(expectedStream);
@@ -102,8 +96,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockStorage = new Mock<IDocumentRepository>();
 
-            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>()))
-                .ReturnsAsync(downloadInfo.Object);
+            mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>())).ReturnsAsync(downloadInfo.Object);
 
             var controller = new DocumentsController(mockStorage.Object, Mock.Of<ILogger<DocumentsController>>());
 

@@ -8,12 +8,12 @@ namespace NHSD.BuyingCatalogue.Documents.API.Logging
     {
         internal const string HealthCheckEndpointDisplayName = "Health checks";
 
-        internal static LogEventLevel GetLevel(HttpContext httpContext, double _, Exception exception)
+        internal static LogEventLevel GetLevel(HttpContext? httpContext, double _, Exception? exception)
         {
-            if (exception != null)
+            if (exception is not null)
                 return LogEventLevel.Error;
 
-            if (httpContext == null || httpContext.Response.StatusCode > 499)
+            if (httpContext is null || httpContext.Response.StatusCode > 499)
                 return LogEventLevel.Error;
 
             return IsHealthCheck(httpContext)
@@ -25,7 +25,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Logging
         {
             var endpoint = httpContext.GetEndpoint();
 
-            return endpoint != null && string.Equals(
+            return endpoint is not null && string.Equals(
                endpoint.DisplayName,
                HealthCheckEndpointDisplayName,
                StringComparison.OrdinalIgnoreCase);

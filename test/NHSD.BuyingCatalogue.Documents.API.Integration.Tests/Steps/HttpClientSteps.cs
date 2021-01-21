@@ -5,15 +5,17 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support;
+using NUnit.Framework;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
 namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
 {
     [Binding]
-    internal class HttpClientSteps
+    internal sealed class HttpClientSteps
     {
         private readonly ScenarioContext _context;
         private readonly AzureBlobStorageScenarioContext _azureBlobStorageScenarioContext;
@@ -53,7 +55,8 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
         public void AResponseIsReturned(int code)
         {
             var response = _context["Response"] as HttpResponseMessage;
-            response.Should().NotBeNull();
+
+            Assert.NotNull(response);
             response.StatusCode.Should().Be(code);
         }
 
@@ -63,7 +66,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             var elements = table.CreateInstance<FileTable>();
 
             var response = _context["Response"] as HttpResponseMessage;
-            response.Should().NotBeNull();
+            Assert.NotNull(response);
 
             var content = JToken.Parse(await response.Content.ReadAsStringAsync());
             content.Select(t => t.Value<string>()).Should().BeEquivalentTo(elements.FileNames);
@@ -72,22 +75,22 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
         [Then(@"the content of the response is equal to '(.*)' belonging to (.*)")]
         public async Task ContentOfTheResponseIsEqualTo(string fileName, string solutionId)
         {
-            if (solutionId == "NULL")
+            if (solutionId.Equals("NULL", StringComparison.OrdinalIgnoreCase))
                 solutionId = null;
 
             const string sampleDataPath = "SampleData";
 
             var response = _context["Response"] as HttpResponseMessage;
-            response.Should().NotBeNull();
+            Assert.NotNull(response);
 
-            using var responseStream = await response.Content.ReadAsStreamAsync();
+            await using var responseStream = await response.Content.ReadAsStreamAsync();
             var responseBytes = await GetBytesFromStream(responseStream);
 
             var path = solutionId is null
                 ? Path.Combine(sampleDataPath, "non-solution", fileName)
                 : Path.Combine(sampleDataPath, solutionId, fileName);
 
-            FileStream ourFileStream = File.OpenRead(path);
+            await using FileStream ourFileStream = File.OpenRead(path);
 
             var ourFileBytes = await GetBytesFromStream(ourFileStream);
             responseBytes.Should().BeEquivalentTo(ourFileBytes);
@@ -98,8 +101,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             using var client = new HttpClient();
 
             var slnId = _azureBlobStorageScenarioContext.TryToGetGuidFromSolutionId(solutionId);
-            var response = await client.GetAsync(new Uri($"{_context["RootUrl"]}/solutions/{slnId}/documents/{fileName}"))
-                .ConfigureAwait(false);
+            var response = await client.GetAsync(new Uri($"{_context["RootUrl"]}/solutions/{slnId}/documents/{fileName}"));
             _context["Response"] = response;
         }
 
@@ -107,21 +109,21 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
         {
             using var client = new HttpClient();
 
-            var response = await client.GetAsync(new Uri($"{_context["RootUrl"]}/documents/{fileName}"))
-                .ConfigureAwait(false);
+            var response = await client.GetAsync(new Uri($"{_context["RootUrl"]}/documents/{fileName}"));
             _context["Response"] = response;
         }
 
         private static async Task<byte[]> GetBytesFromStream(Stream stream)
         {
             var resultBytes = new byte[stream.Length];
-            await stream.ReadAsync(resultBytes, 0, (int)stream.Length);
+            await stream.ReadAsync(resultBytes.AsMemory(0, (int)stream.Length));
             return resultBytes;
         }
 
-        private class FileTable
+        [UsedImplicitly(ImplicitUseTargetFlags.Members)]
+        private sealed class FileTable
         {
-            public IEnumerable<string> FileNames { get; set; }
+            public IEnumerable<string> FileNames { get; init; }
         }
 
         private static class ServiceUrl

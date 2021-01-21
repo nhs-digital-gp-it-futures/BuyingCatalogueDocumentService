@@ -1,14 +1,17 @@
 # BuyingCatalogueDocumentService - Service architecture for the NHS Digital Buying Catalogue Document Service .Net Core application
 
-## IMPORTANT NOTES!
+## IMPORTANT NOTES
+
 **You can use either the latest version of Visual Studio or .NET CLI for Windows, Mac and Linux**.
 
 ### Architecture overview
-This application uses **.NET core** to provide an API capable of running on Linux or Windows.
+
+This application uses **.NET 5** to provide an API capable of running on Linux or Windows.
 It interfaces with Azure Blob Storage, via the .Net Azure Storage SDK.
 
 ### Overview of the application code
-This repo consists of one service using **.NET Core** and **Docker**.
+
+This repo consists of one service using **.NET 5** and **Docker**.
 
 List of all endpoints the application exposes can be found [here](http://localhost:5201/swagger/index.html)
 
@@ -25,14 +28,15 @@ The application is broken down into the following project libraries:
 
 ### Requirements
 
-- .NET Core Version 3.1
+- .NET 5.0
 - Docker
 
-> Before you begin please install **.NET Core 3.1** & **Docker** on your machine.
+> Before you begin please install **.NET 5.0** & **Docker** on your machine.
 
 ## Running the API
 
 ### Running
+
 To start up the API, run the following command from the root directory of the repository.
 
 ```bash
@@ -52,6 +56,7 @@ If both URLs return 'Healthy', the environment is configured correctly, and can 
 If the ready URL returns 'Degraded', the Azure Storage container has failed to launch, or cannot be accessed.
 
 ### Stopping
+
 To stop the API, run the following command from the root directory of the repository.
 
 ```bash

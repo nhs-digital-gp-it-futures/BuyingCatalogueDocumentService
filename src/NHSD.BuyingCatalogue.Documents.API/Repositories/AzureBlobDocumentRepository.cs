@@ -3,8 +3,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Azure;
 using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
-using Flurl;
 using NHSD.BuyingCatalogue.Documents.API.Config;
 
 namespace NHSD.BuyingCatalogue.Documents.API.Repositories
@@ -29,8 +27,10 @@ namespace NHSD.BuyingCatalogue.Documents.API.Repositories
         {
             try
             {
-                return new AzureBlobDocument(
-                    await _client.GetBlobClient(Url.Combine(directoryName, documentName)).DownloadAsync());
+                var blobName = directoryName + "/" + documentName;
+                var downloadInfo = await _client.GetBlobClient(blobName).DownloadAsync();
+
+                return new AzureBlobDocument(downloadInfo);
             }
             catch (RequestFailedException e)
             {
@@ -40,7 +40,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Repositories
 
         public async IAsyncEnumerable<string> GetFileNamesAsync(string directory)
         {
-            var all = _client.GetBlobsAsync(BlobTraits.All, BlobStates.None, $"{directory}/");
+            var all = _client.GetBlobsAsync(prefix: $"{directory}/");
 
             await foreach (var blob in all)
             {

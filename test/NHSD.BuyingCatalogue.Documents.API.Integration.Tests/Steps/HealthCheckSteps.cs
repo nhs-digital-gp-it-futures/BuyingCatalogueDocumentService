@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support;
@@ -23,7 +24,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             _context = context;
             _settings = settings;
         }
-        
+
         [Given(@"the Bob Storage is (up|down)")]
         public void GivenTheBlobStorageIsInState(string state)
         {
@@ -33,9 +34,12 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
         [When(@"the dependency health-check endpoint is hit")]
         public async Task WhenTheHealthCheckEndpointIsHit()
         {
-            using var client = new HttpClient();
+            var requestUri = new Uri(
+                new Uri(_context.Get<string>(ScenarioContextKeys.DocumentApiBaseUrl)),
+                "/health/ready");
 
-            _response.Result = await client.GetAsync(_context.Get<string>(ScenarioContextKeys.DocumentApiBaseUrl) +"/health/ready");
+            using var client = new HttpClient();
+            _response.Result = await client.GetAsync(requestUri);
         }
 
         [Then(@"the response will be (Healthy|Unhealthy)")]

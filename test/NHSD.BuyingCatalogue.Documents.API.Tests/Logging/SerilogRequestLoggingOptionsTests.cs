@@ -39,7 +39,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Logging
             LogEventLevel expectedLevel)
         {
             var featureCollection = new FeatureCollection();
-            var endpoint = new Endpoint(null, null, endpointDisplayName);
+            var endpoint = new Endpoint(null!, null, endpointDisplayName);
             var mockContext = new Mock<HttpContext>();
             mockContext.Setup(c => c.Features).Returns(featureCollection);
             mockContext.Setup(c => c.Response.StatusCode).Returns(statusCode);

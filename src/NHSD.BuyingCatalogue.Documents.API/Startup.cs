@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -17,8 +18,7 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace NHSD.BuyingCatalogue.Documents.API
 {
-    [SuppressMessage("Design", "CA1822", Justification = "ASP.Net needs this to not be static")]
-    public class Startup
+    public sealed class Startup
     {
         public Startup(IConfiguration configuration)
         {
@@ -33,7 +33,7 @@ namespace NHSD.BuyingCatalogue.Documents.API
             var settings = Configuration.GetSection("AzureBlobStorage").Get<AzureBlobStorageSettings>();
             services.AddSingleton<IAzureBlobStorageSettings>(settings);
 
-            services.AddTransient(x => AzureBlobContainerClientFactory.Create(settings));
+            services.AddTransient(_ => AzureBlobContainerClientFactory.Create(settings));
 
             services.AddCustomHealthChecks(settings);
 
@@ -45,12 +45,12 @@ namespace NHSD.BuyingCatalogue.Documents.API
                     {
                         Title = "Documents API",
                         Version = "v1",
-                        Description = "NHS Digital GP IT Buying Catalogue Documents HTTP API"
+                        Description = "NHS Digital GP IT Buying Catalogue Documents HTTP API",
                     }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked by runtime.")]
+        [UsedImplicitly]
         [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Invoked by runtime.")]
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
@@ -75,14 +75,14 @@ namespace NHSD.BuyingCatalogue.Documents.API
                         new HealthCheckOptions
                         {
                             Predicate = healthCheckRegistration =>
-                                healthCheckRegistration.Tags.Contains(HealthCheckTags.Live)
+                                healthCheckRegistration.Tags.Contains(HealthCheckTags.Live),
                         });
 
                     endpoints.MapHealthChecks("/health/ready",
                         new HealthCheckOptions
                         {
                             Predicate = healthCheckRegistration =>
-                                healthCheckRegistration.Tags.Contains(HealthCheckTags.Ready)
+                                healthCheckRegistration.Tags.Contains(HealthCheckTags.Ready),
                         });
                 });
 

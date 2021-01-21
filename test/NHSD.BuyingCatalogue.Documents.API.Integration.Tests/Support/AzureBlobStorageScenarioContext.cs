@@ -9,13 +9,13 @@ using FluentAssertions;
 
 namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
 {
-    internal class AzureBlobStorageScenarioContext
+    internal sealed class AzureBlobStorageScenarioContext
     {
         private const string ConnectionString = "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10100/devstoreaccount1;QueueEndpoint=http://localhost:10101/devstoreaccount1;TableEndpoint=http://localhost:10102/devstoreaccount1;";
         private const string ContainerName = "container-1";
         private const string SampleDataPath = "SampleData";
 
-        private readonly Dictionary<string, string> _solutionIdsToGuids = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _solutionIdsToGuids = new();
         private readonly BlobContainerClient _blobContainer;
 
         public AzureBlobStorageScenarioContext()
@@ -28,10 +28,8 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
         {
             InsertIntoMapping(solutionId);
             var blobClient = _blobContainer.GetBlobClient(Path.Combine(_solutionIdsToGuids[solutionId], fileName));
-            using var uploadFileStream = File.OpenRead(Path.Combine(SampleDataPath, solutionId, fileName));
-            var response = await blobClient
-                .UploadAsync(uploadFileStream, new BlobHttpHeaders())
-                .ConfigureAwait(false);
+            await using var uploadFileStream = File.OpenRead(Path.Combine(SampleDataPath, solutionId, fileName));
+            var response = await blobClient.UploadAsync(uploadFileStream, new BlobHttpHeaders());
 
             response.GetRawResponse().Status.Should().Be(201);
         }
@@ -39,14 +37,12 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
         public async Task InsertFileToStorageNoSolutionId(string fileName)
         {
             var blobClient = _blobContainer.GetBlobClient(Path.Combine("non-solution", fileName));
-            using var uploadFileStream = File.OpenRead(Path.Combine(SampleDataPath, "non-solution", fileName));
-            var response = await blobClient
-                .UploadAsync(uploadFileStream, new BlobHttpHeaders())
-                .ConfigureAwait(false);
+            await using var uploadFileStream = File.OpenRead(Path.Combine(SampleDataPath, "non-solution", fileName));
+            var response = await blobClient.UploadAsync(uploadFileStream, new BlobHttpHeaders());
 
             response.GetRawResponse().Status.Should().Be(201);
         }
-        
+
         public async Task ClearStorage()
         {
             foreach (var blob in _solutionIdsToGuids.Values.SelectMany(directory => _blobContainer.GetBlobs(prefix: directory)))
@@ -57,7 +53,9 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
 
         public string TryToGetGuidFromSolutionId(string solutionId)
         {
-            return _solutionIdsToGuids.TryGetValue(solutionId, out string solutionIdAsGuid) ? solutionIdAsGuid : Guid.Empty.ToString();
+            return _solutionIdsToGuids.TryGetValue(solutionId, out string solutionIdAsGuid)
+                ? solutionIdAsGuid
+                : Guid.Empty.ToString();
         }
 
         private void InsertIntoMapping(string solutionId)
@@ -70,11 +68,14 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
 
         public static void CreateBlobContainerIfNotExists()
         {
-            BlobServiceClient client = new BlobServiceClient(ConnectionString);
-            if (client.GetBlobContainers(prefix: ContainerName).Any(container => container.Name.Equals(ContainerName)))
+            BlobServiceClient client = new(ConnectionString);
+            if (client.GetBlobContainers(prefix: ContainerName).Any(container => container.Name.Equals(
+                ContainerName,
+                StringComparison.OrdinalIgnoreCase)))
             {
                 return;
             }
+
             client.CreateBlobContainer(ContainerName, PublicAccessType.BlobContainer);
         }
     }
