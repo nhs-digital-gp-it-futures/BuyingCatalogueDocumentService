@@ -1,4 +1,4 @@
-# To learn more about .editorconfig see https://aka.ms/editorconfigdocs
+﻿# To learn more about .editorconfig see https://aka.ms/editorconfigdocs
 
 ###############################
 # Core EditorConfig Options   #
@@ -10,11 +10,11 @@ root = true
 # Don't use tabs for indentation.
 [*]
 indent_style = space
+insert_final_newline = true
 
 # Code files
 [*.{cs,csx,vb,vbx}]
 indent_size = 4
-insert_final_newline = true
 charset = utf-8-bom
 
 # XML project files
@@ -182,6 +182,8 @@ csharp_preserve_single_line_blocks = true
 ###############################
 # Code Analysis Severity      #
 ###############################
+
+dotnet_remove_unnecessary_suppression_exclusions = category: ReSharper
 
 # CA1054: Uri parameters should not be strings
 dotnet_diagnostic.CA1054.severity = none

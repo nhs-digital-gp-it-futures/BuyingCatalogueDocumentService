@@ -5,7 +5,7 @@ using TechTalk.SpecFlow;
 namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
 {
     [Binding]
-    internal class StepArgumentTransformations
+    internal sealed class StepArgumentTransformations
     {
         [StepArgumentTransformation]
         internal static List<string> TransformToListOfString(string commaSeparatedList) =>

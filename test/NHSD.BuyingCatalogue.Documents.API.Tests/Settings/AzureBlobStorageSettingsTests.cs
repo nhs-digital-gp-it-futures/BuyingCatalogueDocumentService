@@ -16,7 +16,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Settings
 
             var settings = new AzureBlobStorageSettings { ConnectionString = connectionString };
 
-            settings.Uri.Should().NotBeNull();
+            Assert.NotNull(settings.Uri);
             settings.Uri.AbsoluteUri.Should().BeEquivalentTo(uri);
         }
 

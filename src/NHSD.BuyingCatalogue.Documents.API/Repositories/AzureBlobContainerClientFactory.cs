@@ -18,7 +18,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Repositories
                         Mode = retrySettings.Mode,
                         MaxRetries = retrySettings.MaxRetries,
                         Delay = retrySettings.Delay,
-                        MaxDelay = retrySettings.MaxDelay
+                        MaxDelay = retrySettings.MaxDelay,
                     },
                 };
 

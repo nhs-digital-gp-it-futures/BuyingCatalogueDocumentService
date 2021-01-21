@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -7,7 +8,7 @@ using TechTalk.SpecFlow.Assist;
 namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
 {
     [Binding]
-    internal class AzureBlobSteps
+    internal sealed class AzureBlobSteps
     {
         private readonly AzureBlobStorageScenarioContext _context;
 
@@ -39,17 +40,19 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
                 }
             }
         }
-        
-        private class FileWithSolutionTable
-        {
-            public IEnumerable<string> FileNames { get; set; }
 
-            public string SolutionId { get; set; }
+        [UsedImplicitly(ImplicitUseTargetFlags.Members)]
+        private sealed class FileWithSolutionTable
+        {
+            public IEnumerable<string> FileNames { get; init; }
+
+            public string SolutionId { get; init; }
         }
 
-        private class FileTable
+        [UsedImplicitly(ImplicitUseTargetFlags.Members)]
+        private sealed class FileTable
         {
-            public IEnumerable<string> FileNames { get; set; }
+            public IEnumerable<string> FileNames { get; init; }
         }
     }
 }

@@ -26,7 +26,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
             var azureBlobStorageSettings = new AzureBlobStorageSettings { DocumentDirectory = "non-solution" };
             const string expectedContentType = "test/content";
 
-            using var expectedStream = new MemoryStream();
+            await using var expectedStream = new MemoryStream();
             var mockSdk = MockSdk.DownloadAsync().Returns(expectedStream, expectedContentType);
             var storage = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient, azureBlobStorageSettings);
 
@@ -60,8 +60,8 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
 
             var storage = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient, new AzureBlobStorageSettings());
 
-            var ex = Assert.ThrowsAsync<DocumentRepositoryException>(
-                () => storage.DownloadAsync("Id", "TheBlob"));
+            var ex = Assert.ThrowsAsync<DocumentRepositoryException>(() => storage.DownloadAsync("Id", "TheBlob"));
+            Assert.NotNull(ex);
 
             ex.HttpStatusCode.Should().Be(statusCode);
             ex.Message.Should().Be(message);
@@ -72,7 +72,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
         {
             const string expectedContentType = "test/content";
 
-            using var expectedStream = new MemoryStream();
+            await using var expectedStream = new MemoryStream();
 
             var mockSdk = MockSdk.DownloadAsync().Returns(expectedStream, expectedContentType);
             var storage = new AzureBlobDocumentRepository(mockSdk.BlobContainerClient, new AzureBlobStorageSettings());
@@ -107,10 +107,10 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
             fileNames.Should().BeEquivalentTo(files);
         }
 
-        private class MockSdk
+        private sealed class MockSdk
         {
-            private readonly Mock<BlobClient> mockBlobClient = new Mock<BlobClient>();
-            private readonly Mock<BlobContainerClient> mockContainerClient = new Mock<BlobContainerClient>();
+            private readonly Mock<BlobClient> mockBlobClient = new();
+            private readonly Mock<BlobContainerClient> mockContainerClient = new();
 
             private MockSdk()
             {
@@ -120,13 +120,13 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
 
             internal BlobContainerClient BlobContainerClient => mockContainerClient.Object;
 
-            internal static MockDownloadAsync DownloadAsync() => new MockDownloadAsync();
+            internal static MockDownloadAsync DownloadAsync() => new();
 
-            internal static MockGetBlobsAsync GetBlobsAsync() => new MockGetBlobsAsync();
+            internal static MockGetBlobsAsync GetBlobsAsync() => new();
 
-            internal class MockDownloadAsync
+            internal sealed class MockDownloadAsync
             {
-                private readonly MockSdk mockSdk = new MockSdk();
+                private readonly MockSdk mockSdk = new();
 
                 internal MockSdk Returns(Stream content, string contentType)
                 {
@@ -150,7 +150,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
                 }
             }
 
-            internal class MockGetBlobsAsync
+            internal sealed class MockGetBlobsAsync
             {
                 private readonly Expression<Func<BlobContainerClient, AsyncPageable<BlobItem>>> getBlobsAsync =
                     c => c.GetBlobsAsync(
@@ -159,7 +159,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
                         It.IsAny<string>(),
                         It.IsAny<CancellationToken>());
 
-                private readonly MockSdk mockSdk = new MockSdk();
+                private readonly MockSdk mockSdk = new();
 
                 internal MockSdk Returns(string directory, IEnumerable<string> files)
                 {

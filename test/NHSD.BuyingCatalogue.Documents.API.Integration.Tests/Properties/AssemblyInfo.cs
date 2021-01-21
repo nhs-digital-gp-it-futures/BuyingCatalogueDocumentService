@@ -1,1 +1,5 @@
-﻿[assembly: NUnit.Framework.Parallelizable(NUnit.Framework.ParallelScope.Fixtures)]
+﻿using System;
+using NUnit.Framework;
+
+[assembly: CLSCompliant(false)]
+[assembly: Parallelizable(ParallelScope.Fixtures)]

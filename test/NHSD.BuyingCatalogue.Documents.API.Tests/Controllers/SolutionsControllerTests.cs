@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Common;
-using Flurl;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -92,7 +91,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
         {
             const string expectedContentType = "test/content-type";
 
-            using var expectedStream = new MemoryStream(Encoding.UTF8.GetBytes("Hello world!"));
+            await using var expectedStream = new MemoryStream(Encoding.UTF8.GetBytes("Hello world!"));
 
             var downloadInfo = new Mock<IDocument>();
             downloadInfo.Setup(d => d.Content).Returns(expectedStream);

@@ -47,7 +47,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Config
             return JsonSerializer.Serialize(this, jsonOptions);
         }
 
-        private class TimeSpanConverter : JsonConverter<TimeSpan>
+        private sealed class TimeSpanConverter : JsonConverter<TimeSpan>
         {
             public override TimeSpan Read(
                 ref Utf8JsonReader reader,

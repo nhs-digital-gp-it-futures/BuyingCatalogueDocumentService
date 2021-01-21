@@ -1,5 +1,6 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Mime;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,13 +10,13 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    [Produces("application/json")]
-    [AllowAnonymous]
+    [Produces(MediaTypeNames.Application.Json)]
     public sealed class DocumentsController : ControllerBase
     {
         private readonly IDocumentRepository _documentRepository;
         private readonly ILogger _logger;
 
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "MS DI requires closed-generic ILogger type")]
         public DocumentsController(
             IDocumentRepository documentRepository,
             ILogger<DocumentsController> logger)
@@ -26,7 +27,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
 
         [HttpGet]
         [Route("{name}")]
-        [Produces("application/octet-stream", "application/json")]
+        [Produces(MediaTypeNames.Application.Octet, MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status206PartialContent)]
         [ProducesErrorResponseType(typeof(void))]

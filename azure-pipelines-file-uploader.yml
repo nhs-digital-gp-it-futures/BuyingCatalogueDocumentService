@@ -4,7 +4,6 @@ variables:
   - group: dev-secrets
 
 trigger:
-- development
 - master
 
 pool:
@@ -13,14 +12,14 @@ pool:
 jobs:
 - job: version
   displayName: Work out Version
-  condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
+  condition: succeeded()
   pool:
     vmImage: 'ubuntu-latest'
   steps:
   - task: UseGitVersion@5
     displayName: gitversion
     inputs:
-      versionSpec: '5.0.1'
+      versionSpec: '5.x'
   - script: echo "##vso[task.setvariable variable=semVer;isOutput=true]$(GitVersion.SemVer)"
     name: setVersionStep
   - script: echo semVer $(setVersionStep.semVer)
@@ -28,7 +27,7 @@ jobs:
 
 - job: dockerBuildAndPush
   displayName: Build & push docker containers to the acr
-  condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
+  condition: succeeded()
   variables:
     semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
   dependsOn: version
@@ -85,6 +84,7 @@ jobs:
 
   - task: DockerCompose@0
     displayName: 'Docker Build: Test'
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
       azureContainerRegistry: '{"loginServer":"gpitfuturestestacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-test-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturestestacr"}'
@@ -95,6 +95,7 @@ jobs:
 
   - task: DockerCompose@0
     displayName: 'Docker Push: Test'
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')))
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
       azureContainerRegistry: '{"loginServer":"gpitfuturestestacr.azurecr.io", "id" : "/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-test-rg-acr/providers/Microsoft.ContainerRegistry/registries/gpitfuturestestacr"}'
