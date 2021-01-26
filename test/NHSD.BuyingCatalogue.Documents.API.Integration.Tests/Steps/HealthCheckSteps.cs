@@ -37,7 +37,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
         public async Task WhenTheHealthCheckEndpointIsHit()
         {
             var requestUri = new Uri(
-                new Uri(context.Get<string>(ScenarioContextKeys.DocumentApiBaseUrl)),
+                context.Get<Uri>(ScenarioContextKeys.DocumentApiBaseUrl),
                 "/health/ready");
 
             using var client = new HttpClient();

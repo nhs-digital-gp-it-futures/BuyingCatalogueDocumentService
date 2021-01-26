@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 
 namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Utils
 {
@@ -6,12 +7,12 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Utils
     {
         public Settings(IConfiguration config)
         {
-            DocumentApiBaseUrl = config.GetValue<string>("DocumentApiBaseUrl");
-            BrokenDocumentApiBaseUrl = config.GetValue<string>("BrokenDocumentApiBaseUrl");
+            DocumentApiBaseUrl = config.GetValue<Uri>("DocumentApiBaseUrl");
+            BrokenDocumentApiBaseUrl = config.GetValue<Uri>("BrokenDocumentApiBaseUrl");
         }
 
-        public string DocumentApiBaseUrl { get; }
+        public Uri DocumentApiBaseUrl { get; }
 
-        public string BrokenDocumentApiBaseUrl { get; }
+        public Uri BrokenDocumentApiBaseUrl { get; }
     }
 }
