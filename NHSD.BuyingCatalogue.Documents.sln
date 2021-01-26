@@ -10,9 +10,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.BuyingCatalogue.Documents.API.UnitTests", "test\NHSD.BuyingCatalogue.Documents.API.Tests\NHSD.BuyingCatalogue.Documents.API.UnitTests.csproj", "{60036623-6B49-4E45-AC3D-DEEBB09D0B74}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{C37EF23A-0BA3-4C1C-93A0-CF35738F21CE}"
-	ProjectSection(SolutionItems) = preProject
-		test\.editorconfig = test\.editorconfig
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2E66BA6E-566A-4B4D-8C82-415148612C2E}"
 	ProjectSection(SolutionItems) = preProject
