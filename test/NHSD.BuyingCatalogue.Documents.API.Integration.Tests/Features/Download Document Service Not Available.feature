@@ -8,7 +8,7 @@ Background:
         | FileNames |
         | File1.xlsx |
 
-Scenario: 1. Azure blob storage is not available
+Scenario: Azure blob storage is not available
     Given the blob storage service is down
     When a GET File1.xlsx document request is made
     Then a response with status code 500 is returned
