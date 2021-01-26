@@ -16,21 +16,21 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
             const int statusCode = 404;
 
             var innerException = new InvalidOperationException(message);
-            var repoException = new DocumentRepositoryException(innerException, statusCode);
+            var repositoryException = new DocumentRepositoryException(innerException, statusCode);
 
-            repoException.HttpStatusCode.Should().Be(statusCode);
-            repoException.InnerException.Should().Be(innerException);
-            repoException.Message.Should().Be(message);
+            repositoryException.HttpStatusCode.Should().Be(statusCode);
+            repositoryException.InnerException.Should().Be(innerException);
+            repositoryException.Message.Should().Be(message);
         }
 
         [Test]
-        public void Constructor_Parameterless_InitializesCorrectly()
+        public void Constructor_InitializesCorrectly()
         {
-            var repoException = new DocumentRepositoryException();
+            var repositoryException = new DocumentRepositoryException();
 
-            repoException.HttpStatusCode.Should().Be(0);
-            repoException.InnerException.Should().BeNull();
-            repoException.Message.Should().Be(DocumentRepositoryException.DefaultMessage);
+            repositoryException.HttpStatusCode.Should().Be(0);
+            repositoryException.InnerException.Should().BeNull();
+            repositoryException.Message.Should().Be(DocumentRepositoryException.DefaultMessage);
         }
 
         [Test]
@@ -39,11 +39,11 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
             const string message = "This is a message.";
 
             var innerException = new InvalidOperationException();
-            var repoException = new DocumentRepositoryException(message, innerException);
+            var repositoryException = new DocumentRepositoryException(message, innerException);
 
-            repoException.HttpStatusCode.Should().Be(0);
-            repoException.InnerException.Should().Be(innerException);
-            repoException.Message.Should().Be(message);
+            repositoryException.HttpStatusCode.Should().Be(0);
+            repositoryException.InnerException.Should().Be(innerException);
+            repositoryException.Message.Should().Be(message);
         }
 
         [Test]
@@ -51,11 +51,11 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
         {
             const string message = "This is a message.";
 
-            var repoException = new DocumentRepositoryException(message);
+            var repositoryException = new DocumentRepositoryException(message);
 
-            repoException.HttpStatusCode.Should().Be(0);
-            repoException.InnerException.Should().BeNull();
-            repoException.Message.Should().Be(message);
+            repositoryException.HttpStatusCode.Should().Be(0);
+            repositoryException.InnerException.Should().BeNull();
+            repositoryException.Message.Should().Be(message);
         }
     }
 }

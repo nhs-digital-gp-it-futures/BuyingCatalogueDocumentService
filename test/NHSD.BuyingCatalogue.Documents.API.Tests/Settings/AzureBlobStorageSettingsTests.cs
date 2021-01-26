@@ -10,7 +10,9 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Settings
         [Test]
         public void Uri_HasConnectionString_ReturnsUri()
         {
+            // ReSharper disable once StringLiteralTypo
             const string uri = "http://127.0.0.1:10000/devstoreaccount1";
+
             const string connectionString =
                 "DefaultEndpointsProtocol=http;AccountName=UnitTest;AccountKey=;BlobEndpoint=" + uri;
 

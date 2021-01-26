@@ -41,7 +41,6 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             var mockLogger = new MockLogger<DocumentsController>(Callback);
 
-            
             var controller = new DocumentsController(mockStorage.Object, mockLogger);
 
             await controller.DownloadAsync("directory");

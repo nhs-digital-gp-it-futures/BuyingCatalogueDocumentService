@@ -9,18 +9,18 @@ namespace NHSD.BuyingCatalogue.Documents.API.Repositories
 {
     internal sealed class AzureBlobDocumentRepository : IDocumentRepository
     {
-        private readonly BlobContainerClient _client;
-        private readonly IAzureBlobStorageSettings _blobStorageSettings;
+        private readonly BlobContainerClient client;
+        private readonly IAzureBlobStorageSettings blobStorageSettings;
 
         public AzureBlobDocumentRepository(BlobContainerClient client, IAzureBlobStorageSettings blobStorageSettings)
         {
-            _client = client;
-            _blobStorageSettings = blobStorageSettings;
+            this.client = client;
+            this.blobStorageSettings = blobStorageSettings;
         }
 
         public Task<IDocument> DownloadAsync(string documentName)
         {
-            return DownloadAsync(_blobStorageSettings.DocumentDirectory, documentName);
+            return DownloadAsync(blobStorageSettings.DocumentDirectory, documentName);
         }
 
         public async Task<IDocument> DownloadAsync(string? directoryName, string documentName)
@@ -28,7 +28,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Repositories
             try
             {
                 var blobName = directoryName + "/" + documentName;
-                var downloadInfo = await _client.GetBlobClient(blobName).DownloadAsync();
+                var downloadInfo = await client.GetBlobClient(blobName).DownloadAsync();
 
                 return new AzureBlobDocument(downloadInfo);
             }
@@ -40,7 +40,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.Repositories
 
         public async IAsyncEnumerable<string> GetFileNamesAsync(string directory)
         {
-            var all = _client.GetBlobsAsync(prefix: $"{directory}/");
+            var all = client.GetBlobsAsync(prefix: $"{directory}/");
 
             await foreach (var blob in all)
             {

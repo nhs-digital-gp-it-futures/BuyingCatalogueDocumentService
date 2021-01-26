@@ -10,11 +10,11 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
     [Binding]
     internal sealed class AzureBlobSteps
     {
-        private readonly AzureBlobStorageScenarioContext _context;
+        private readonly AzureBlobStorageScenarioContext context;
 
         public AzureBlobSteps(AzureBlobStorageScenarioContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         [Given(@"There are files in the blob storage")]
@@ -24,7 +24,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             {
                 foreach (var file in row.FileNames)
                 {
-                    await _context.InsertFileToStorage(row.SolutionId, file);
+                    await context.InsertFileToStorage(row.SolutionId, file);
                 }
             }
         }
@@ -36,7 +36,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             {
                 foreach (var file in row.FileNames)
                 {
-                    await _context.InsertFileToStorageNoSolutionId(file);
+                    await context.InsertFileToStorageNoSolutionId(file);
                 }
             }
         }

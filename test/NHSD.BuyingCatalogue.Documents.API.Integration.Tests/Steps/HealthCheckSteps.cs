@@ -11,41 +11,43 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
     [Binding]
     internal sealed class HealthCheckSteps
     {
-        private readonly Response _response;
-        private readonly ScenarioContext _context;
-        private readonly Settings _settings;
+        private readonly Response response;
+        private readonly ScenarioContext context;
+        private readonly Settings settings;
 
         public HealthCheckSteps(
             Response response,
             ScenarioContext context,
             Settings settings)
         {
-            _response = response;
-            _context = context;
-            _settings = settings;
+            this.response = response;
+            this.context = context;
+            this.settings = settings;
         }
 
         [Given(@"the Bob Storage is (up|down)")]
         public void GivenTheBlobStorageIsInState(string state)
         {
-            _context[ScenarioContextKeys.DocumentApiBaseUrl] = state == "up" ? _settings.DocumentApiBaseUrl : _settings.BrokenDocumentApiBaseUrl;
+            context[ScenarioContextKeys.DocumentApiBaseUrl] = state == "up"
+                ? settings.DocumentApiBaseUrl
+                : settings.BrokenDocumentApiBaseUrl;
         }
 
         [When(@"the dependency health-check endpoint is hit")]
         public async Task WhenTheHealthCheckEndpointIsHit()
         {
             var requestUri = new Uri(
-                new Uri(_context.Get<string>(ScenarioContextKeys.DocumentApiBaseUrl)),
+                new Uri(context.Get<string>(ScenarioContextKeys.DocumentApiBaseUrl)),
                 "/health/ready");
 
             using var client = new HttpClient();
-            _response.Result = await client.GetAsync(requestUri);
+            response.Result = await client.GetAsync(requestUri);
         }
 
         [Then(@"the response will be (Healthy|Unhealthy)")]
         public async Task ThenTheHealthStatusIs(string status)
         {
-            var healthStatus = await _response.Result.Content.ReadAsStringAsync();
+            var healthStatus = await response.Result.Content.ReadAsStringAsync();
             healthStatus.Should().Be(status);
         }
     }
