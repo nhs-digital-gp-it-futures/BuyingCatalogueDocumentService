@@ -128,7 +128,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 
             okResult.StatusCode.Should().Be(200);
             okResult.Value.Should().Be(mockEnumerable.Object);
-            mockStorage.Verify(x => x.GetFileNamesAsync("Foobar"), Times.Once);
+            mockStorage.Verify(r => r.GetFileNamesAsync("Foobar"));
         }
     }
 }

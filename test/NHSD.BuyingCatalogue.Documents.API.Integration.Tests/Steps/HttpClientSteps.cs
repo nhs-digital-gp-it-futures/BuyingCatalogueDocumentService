@@ -17,20 +17,20 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
     [Binding]
     internal sealed class HttpClientSteps
     {
-        private readonly ScenarioContext _context;
-        private readonly AzureBlobStorageScenarioContext _azureBlobStorageScenarioContext;
+        private readonly ScenarioContext context;
+        private readonly AzureBlobStorageScenarioContext azureBlobStorageScenarioContext;
 
         public HttpClientSteps(ScenarioContext context, AzureBlobStorageScenarioContext azureBlobStorageScenarioContext)
         {
-            _context = context;
-            _context["RootUrl"] = ServiceUrl.Working;
-            _azureBlobStorageScenarioContext = azureBlobStorageScenarioContext;
+            this.context = context;
+            this.context["RootUrl"] = ServiceUrl.Working;
+            this.azureBlobStorageScenarioContext = azureBlobStorageScenarioContext;
         }
 
         [Given(@"the blob storage service is down")]
         public void GivenTheBlobStorageServiceIsDown()
         {
-            _context["RootUrl"] = ServiceUrl.Broken;
+            context["RootUrl"] = ServiceUrl.Broken;
         }
 
         [When("a GET documents request is made for solution (.*)")]
@@ -54,7 +54,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
         [Then(@"a response with status code ([\d]+) is returned")]
         public void AResponseIsReturned(int code)
         {
-            var response = _context["Response"] as HttpResponseMessage;
+            var response = context["Response"] as HttpResponseMessage;
 
             Assert.NotNull(response);
             response.StatusCode.Should().Be(code);
@@ -65,7 +65,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
         {
             var elements = table.CreateInstance<FileTable>();
 
-            var response = _context["Response"] as HttpResponseMessage;
+            var response = context["Response"] as HttpResponseMessage;
             Assert.NotNull(response);
 
             var content = JToken.Parse(await response.Content.ReadAsStringAsync());
@@ -80,7 +80,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
 
             const string sampleDataPath = "SampleData";
 
-            var response = _context["Response"] as HttpResponseMessage;
+            var response = context["Response"] as HttpResponseMessage;
             Assert.NotNull(response);
 
             await using var responseStream = await response.Content.ReadAsStreamAsync();
@@ -96,23 +96,6 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             responseBytes.Should().BeEquivalentTo(ourFileBytes);
         }
 
-        private async Task GetResponseFromEndpoint(string solutionId, string fileName = null)
-        {
-            using var client = new HttpClient();
-
-            var slnId = _azureBlobStorageScenarioContext.TryToGetGuidFromSolutionId(solutionId);
-            var response = await client.GetAsync(new Uri($"{_context["RootUrl"]}/solutions/{slnId}/documents/{fileName}"));
-            _context["Response"] = response;
-        }
-
-        private async Task GetResponseFromDocumentEndpointWithNoSolutionId(string fileName = null)
-        {
-            using var client = new HttpClient();
-
-            var response = await client.GetAsync(new Uri($"{_context["RootUrl"]}/documents/{fileName}"));
-            _context["Response"] = response;
-        }
-
         private static async Task<byte[]> GetBytesFromStream(Stream stream)
         {
             var resultBytes = new byte[stream.Length];
@@ -120,16 +103,33 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             return resultBytes;
         }
 
-        [UsedImplicitly(ImplicitUseTargetFlags.Members)]
-        private sealed class FileTable
+        private async Task GetResponseFromEndpoint(string solutionId, string fileName = null)
         {
-            public IEnumerable<string> FileNames { get; init; }
+            using var client = new HttpClient();
+
+            var slnId = azureBlobStorageScenarioContext.TryToGetGuidFromSolutionId(solutionId);
+            var response = await client.GetAsync(new Uri($"{context["RootUrl"]}/solutions/{slnId}/documents/{fileName}"));
+            context["Response"] = response;
+        }
+
+        private async Task GetResponseFromDocumentEndpointWithNoSolutionId(string fileName = null)
+        {
+            using var client = new HttpClient();
+
+            var response = await client.GetAsync(new Uri($"{context["RootUrl"]}/documents/{fileName}"));
+            context["Response"] = response;
         }
 
         private static class ServiceUrl
         {
             internal const string Working = "http://localhost:5201/api/v1";
             internal const string Broken = "http://localhost:5211/api/v1";
+        }
+
+        [UsedImplicitly(ImplicitUseTargetFlags.Members)]
+        private sealed class FileTable
+        {
+            public IEnumerable<string> FileNames { get; init; }
         }
     }
 }

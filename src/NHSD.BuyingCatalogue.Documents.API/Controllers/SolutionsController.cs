@@ -14,16 +14,16 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
     [Produces(MediaTypeNames.Application.Json)]
     public sealed class SolutionsController : ControllerBase
     {
-        private readonly IDocumentRepository _documentRepository;
-        private readonly ILogger _logger;
+        private readonly IDocumentRepository documentRepository;
+        private readonly ILogger logger;
 
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "MS DI requires closed-generic ILogger type")]
         public SolutionsController(
             IDocumentRepository documentRepository,
             ILogger<SolutionsController> logger)
         {
-            _documentRepository = documentRepository;
-            _logger = logger;
+            this.documentRepository = documentRepository;
+            this.logger = logger;
         }
 
         [HttpGet]
@@ -42,11 +42,11 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
 
             try
             {
-                downloadInfo = await _documentRepository.DownloadAsync(id, name);
+                downloadInfo = await documentRepository.DownloadAsync(id, name);
             }
             catch (DocumentRepositoryException e)
             {
-                _logger.LogError(e, null);
+                logger.LogError(e, null);
                 return StatusCode(e.HttpStatusCode);
             }
 
@@ -58,6 +58,6 @@ namespace NHSD.BuyingCatalogue.Documents.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<IAsyncEnumerable<string>> GetDocumentsBySolutionId(string id)
-            => Ok(_documentRepository.GetFileNamesAsync(id));
+            => Ok(documentRepository.GetFileNamesAsync(id));
     }
 }

@@ -9,7 +9,7 @@ namespace NHSD.BuyingCatalogue.Documents.API
 {
     public static class Program
     {
-        public static void Main(string[] args)
+        public static void Main(string[] arguments)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -25,7 +25,7 @@ namespace NHSD.BuyingCatalogue.Documents.API
             try
             {
                 Log.Information("Starting host");
-                CreateHostBuilder(args).Build().Run();
+                CreateHostBuilder(arguments).Build().Run();
             }
             catch (Exception e)
             {
@@ -38,8 +38,8 @@ namespace NHSD.BuyingCatalogue.Documents.API
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] arguments) =>
+            Host.CreateDefaultBuilder(arguments)
                 .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

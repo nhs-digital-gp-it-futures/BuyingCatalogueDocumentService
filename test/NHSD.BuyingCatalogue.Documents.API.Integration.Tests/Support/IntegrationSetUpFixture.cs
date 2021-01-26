@@ -9,13 +9,13 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
     [Binding]
     internal sealed class IntegrationSetupFixture
     {
-        private readonly AzureBlobStorageScenarioContext _scenarioContext;
-        private readonly IObjectContainer _objectContainer;
+        private readonly AzureBlobStorageScenarioContext scenarioContext;
+        private readonly IObjectContainer objectContainer;
 
         public IntegrationSetupFixture(AzureBlobStorageScenarioContext scenarioContext, IObjectContainer objectContainer)
         {
-            _scenarioContext = scenarioContext;
-            _objectContainer = objectContainer ?? throw new ArgumentNullException(nameof(objectContainer));
+            this.scenarioContext = scenarioContext;
+            this.objectContainer = objectContainer ?? throw new ArgumentNullException(nameof(objectContainer));
         }
 
         [BeforeTestRun]
@@ -33,7 +33,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
         [AfterScenario]
         public async Task ClearBlobContainer()
         {
-            await _scenarioContext.ClearStorage();
+            await scenarioContext.ClearStorage();
         }
 
         public void RegisterTestConfiguration()
@@ -43,7 +43,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Support
                 .AddEnvironmentVariables()
                 .Build();
 
-            _objectContainer.RegisterInstanceAs<IConfiguration>(configurationBuilder);
+            objectContainer.RegisterInstanceAs<IConfiguration>(configurationBuilder);
         }
     }
 }
