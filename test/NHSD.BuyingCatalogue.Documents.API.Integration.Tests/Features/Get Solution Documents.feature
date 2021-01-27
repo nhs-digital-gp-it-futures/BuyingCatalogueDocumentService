@@ -3,7 +3,7 @@
     I want to make GET documents requests for a solution
     So that I can see all available documents for a solution
 
-Scenario Outline: 1. Correct file names are returned for a solution
+Scenario Outline: Correct file names are returned for a solution
     Given There are files in the blob storage
         | SolutionId   | FileNames   |
         | <SolutionId> | <FileNames> |
