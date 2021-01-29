@@ -6,10 +6,11 @@ using NUnit.Framework;
 namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Factory
 {
     [TestFixture]
-    internal sealed class AzureBlobContainerClientFactoryTests
+    [Parallelizable(ParallelScope.All)]
+    internal static class AzureBlobContainerClientFactoryTests
     {
         [Test]
-        public void Create_NullRetryOptions_ReturnsContainerClient()
+        public static void Create_NullRetryOptions_ReturnsContainerClient()
         {
             const string accountName = "devstoreaccount1";
             const string containerName = "Container";
@@ -33,7 +34,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Factory
         }
 
         [Test]
-        public void Create_WithRetryOptions_ReturnsContainerClient()
+        public static void Create_WithRetryOptions_ReturnsContainerClient()
         {
             const string accountName = "devstoreaccount1";
             const string containerName = "Container";

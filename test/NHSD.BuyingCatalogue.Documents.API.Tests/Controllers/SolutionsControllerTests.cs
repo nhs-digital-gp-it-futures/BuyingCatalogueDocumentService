@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -11,48 +12,44 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NHSD.BuyingCatalogue.Documents.API.Controllers;
 using NHSD.BuyingCatalogue.Documents.API.Repositories;
-using NHSD.BuyingCatalogue.Documents.API.UnitTests.Mocks;
 using NUnit.Framework;
 
 namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    internal sealed class SolutionsControllerTests
+    internal static class SolutionsControllerTests
     {
         [Test]
-        public async Task DownloadAsync_DocumentRepositoryException_IsLogged()
+        public static async Task DownloadAsync_DocumentRepositoryException_IsLogged()
         {
-            var exception = new DocumentRepositoryException(
+            var expectedException = new DocumentRepositoryException(
                 new InvalidOperationException(),
                 StatusCodes.Status502BadGateway);
 
             var mockStorage = new Mock<IDocumentRepository>();
 
             mockStorage.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<string>()))
-                .Throws(exception);
+                .Throws(expectedException);
 
-            var logLevel = LogLevel.None;
-            Exception actualException = null;
+            var mockLogger = new Mock<ILogger<SolutionsController>>();
 
-            void Callback(LogLevel l, Exception e)
-            {
-                logLevel = l;
-                actualException = e;
-            }
-
-            var mockLogger = new MockLogger<SolutionsController>(Callback);
-
-            var controller = new SolutionsController(mockStorage.Object, mockLogger);
+            var controller = new SolutionsController(mockStorage.Object, mockLogger.Object);
 
             await controller.DownloadAsync("ID", "directory");
 
-            logLevel.Should().Be(LogLevel.Error);
-            actualException.Should().Be(exception);
+            Expression<Action<ILogger<SolutionsController>>> expression = l => l.Log(
+                It.Is<LogLevel>(l => l == LogLevel.Error),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => true),
+                It.Is<Exception>(e => e == expectedException),
+                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true));
+
+            mockLogger.Verify(expression);
         }
 
         [Test]
-        public async Task DownloadAsync_DocumentRepositoryException_ReturnsStatusCodeResult()
+        public static async Task DownloadAsync_DocumentRepositoryException_ReturnsStatusCodeResult()
         {
             var exception = new DocumentRepositoryException(
                 new InvalidOperationException(),
@@ -72,7 +69,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
         }
 
         [Test]
-        public void DownloadAsync_Exception_DoesNotSwallow()
+        public static void DownloadAsync_Exception_DoesNotSwallow()
         {
             var exception = new InvalidOperationException();
 
@@ -87,7 +84,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
         }
 
         [Test]
-        public async Task DownloadAsync_ReturnsFileStreamResult()
+        public static async Task DownloadAsync_ReturnsFileStreamResult()
         {
             const string expectedContentType = "test/content-type";
 
@@ -112,7 +109,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
         }
 
         [Test]
-        public void GetFileNamesAsync_ReturnsStorageResult()
+        public static void GetFileNamesAsync_ReturnsStorageResult()
         {
             var mockEnumerable = new Mock<IAsyncEnumerable<string>>();
 

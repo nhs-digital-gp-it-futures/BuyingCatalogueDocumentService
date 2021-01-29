@@ -8,10 +8,10 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Model
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    internal sealed class AzureBlobDocumentTests
+    internal static class AzureBlobDocumentTests
     {
         [Test]
-        public void ContentInfo_ReturnsExpectedValue()
+        public static void ContentInfo_ReturnsExpectedValue()
         {
             using var stream = new MemoryStream();
 
@@ -23,7 +23,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Model
         }
 
         [Test]
-        public void ContentType_ReturnsExpectedValue()
+        public static void ContentType_ReturnsExpectedValue()
         {
             const string contentType = "test/content";
 

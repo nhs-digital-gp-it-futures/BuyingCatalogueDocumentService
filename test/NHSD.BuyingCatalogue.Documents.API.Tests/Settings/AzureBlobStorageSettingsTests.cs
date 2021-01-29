@@ -5,10 +5,10 @@ using NUnit.Framework;
 namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Settings
 {
     [TestFixture]
-    internal sealed class AzureBlobStorageSettingsTests
+    internal static class AzureBlobStorageSettingsTests
     {
         [Test]
-        public void Uri_HasConnectionString_ReturnsUri()
+        public static void Uri_HasConnectionString_ReturnsUri()
         {
             // ReSharper disable once StringLiteralTypo
             const string uri = "http://127.0.0.1:10000/devstoreaccount1";
@@ -24,7 +24,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Settings
 
         [TestCase(null)]
         [TestCase("DefaultEndpointsProtocol=http;NotValid=foo;")]
-        public void Uri_NullConnectionString_ReturnsNull(string connectionString)
+        public static void Uri_NullConnectionString_ReturnsNull(string connectionString)
         {
             var settings = new AzureBlobStorageSettings { ConnectionString = connectionString };
 
