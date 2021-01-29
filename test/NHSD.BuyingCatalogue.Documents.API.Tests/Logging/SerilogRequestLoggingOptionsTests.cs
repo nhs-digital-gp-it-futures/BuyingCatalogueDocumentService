@@ -10,17 +10,18 @@ using Serilog.Events;
 namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Logging
 {
     [TestFixture]
-    internal sealed class SerilogRequestLoggingOptionsTests
+    [Parallelizable(ParallelScope.All)]
+    internal static class SerilogRequestLoggingOptionsTests
     {
         [Test]
-        public void GetLevel_Exception_ReturnsError()
+        public static void GetLevel_Exception_ReturnsError()
         {
             SerilogRequestLoggingOptions.GetLevel(null, 0, new InvalidOperationException())
                 .Should().Be(LogEventLevel.Error);
         }
 
         [Test]
-        public void GetLevel_NullHttpContext_ReturnsError()
+        public static void GetLevel_NullHttpContext_ReturnsError()
         {
             SerilogRequestLoggingOptions.GetLevel(null, 0, null)
                 .Should().Be(LogEventLevel.Error);
@@ -33,7 +34,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Logging
         [TestCase(null, StatusCodes.Status501NotImplemented, LogEventLevel.Error)]
         [TestCase("Not a health check", StatusCodes.Status200OK, LogEventLevel.Information)]
         [TestCase(SerilogRequestLoggingOptions.HealthCheckEndpointDisplayName, StatusCodes.Status200OK, LogEventLevel.Verbose)]
-        public void IsHealthCheck_ReturnsExpectedValue(
+        public static void IsHealthCheck_ReturnsExpectedValue(
             string endpointDisplayName,
             int statusCode,
             LogEventLevel expectedLevel)

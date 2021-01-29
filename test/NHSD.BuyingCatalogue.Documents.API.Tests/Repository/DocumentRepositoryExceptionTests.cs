@@ -7,10 +7,10 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-    internal sealed class DocumentRepositoryExceptionTests
+    internal static class DocumentRepositoryExceptionTests
     {
         [Test]
-        public void Constructor_Exception_Int_InitializesCorrectly()
+        public static void Constructor_Exception_Int_InitializesCorrectly()
         {
             const string message = "This is a message.";
             const int statusCode = 404;
@@ -24,7 +24,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
         }
 
         [Test]
-        public void Constructor_InitializesCorrectly()
+        public static void Constructor_InitializesCorrectly()
         {
             var repositoryException = new DocumentRepositoryException();
 
@@ -34,7 +34,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
         }
 
         [Test]
-        public void Constructor_String_Exception_InitializesCorrectly()
+        public static void Constructor_String_Exception_InitializesCorrectly()
         {
             const string message = "This is a message.";
 
@@ -47,7 +47,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
         }
 
         [Test]
-        public void Constructor_String_InitializesCorrectly()
+        public static void Constructor_String_InitializesCorrectly()
         {
             const string message = "This is a message.";
 
