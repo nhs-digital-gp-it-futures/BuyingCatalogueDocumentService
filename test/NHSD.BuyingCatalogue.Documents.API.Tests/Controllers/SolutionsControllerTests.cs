@@ -104,7 +104,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Controllers
             var result = await controller.DownloadAsync("ID", "directory") as FileStreamResult;
 
             Assert.NotNull(result);
-            result.FileStream.IsSameOrEqualTo(expectedStream);
+            result.FileStream.Should().BeSameAs(expectedStream);
             result.ContentType.Should().Be(expectedContentType);
         }
 

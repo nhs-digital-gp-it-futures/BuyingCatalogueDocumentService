@@ -34,7 +34,7 @@ services:
       - "5211:80"
       
   blob.store:
-    image: mcr.microsoft.com/azure-storage/azurite:3.10.0
+    image: mcr.microsoft.com/azure-storage/azurite:latest
     container_name: nhsd_bc_integration_blob_store
     networks:
       - document_network
