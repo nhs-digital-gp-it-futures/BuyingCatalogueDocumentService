@@ -32,7 +32,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
 
             var result = await storage.DownloadAsync("TheBlob");
 
-            result.Content.Should().Be(expectedStream);
+            result.Content.Should().BeSameAs(expectedStream);
             result.ContentType.Should().Be(expectedContentType);
         }
 
@@ -79,7 +79,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Repository
 
             var result = await storage.DownloadAsync("Id", "TheBlob");
 
-            result.Content.Should().Be(expectedStream);
+            result.Content.Should().BeSameAs(expectedStream);
             result.ContentType.Should().Be(expectedContentType);
         }
 

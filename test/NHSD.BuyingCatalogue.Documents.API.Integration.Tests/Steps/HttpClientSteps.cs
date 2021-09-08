@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -57,7 +58,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.IntegrationTests.Steps
             var response = context["Response"] as HttpResponseMessage;
 
             Assert.NotNull(response);
-            response.StatusCode.Should().Be(code);
+            response.StatusCode.Should().Be((HttpStatusCode)code);
         }
 
         [Then(@"the returned response contains the following file names")]

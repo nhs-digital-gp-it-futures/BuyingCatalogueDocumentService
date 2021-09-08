@@ -19,7 +19,7 @@ namespace NHSD.BuyingCatalogue.Documents.API.UnitTests.Model
 
             var document = new AzureBlobDocument(downloadInfo);
 
-            document.Content.Should().Be(downloadInfo.Content);
+            document.Content.Should().BeSameAs(downloadInfo.Content);
         }
 
         [Test]
